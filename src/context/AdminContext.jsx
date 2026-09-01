@@ -193,11 +193,7 @@ export function AdminProvider({ children }) {
   const login = (password) => {
     const envPassword = import.meta.env.VITE_ADMIN_PASSWORD || DEFAULT_FALLBACK_PASSWORD;
     if (
-      password === envPassword || 
-      password === 'admin' || 
-      password === '031105' || 
-      password === 'szervinsk2026' || 
-      password === 'admin123'
+      password === envPassword 
     ) {
       setIsAdmin(true);
       setIsLoginModalOpen(false);
