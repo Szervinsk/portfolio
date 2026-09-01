@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AdminContext = createContext();
 
-const ADMIN_PASSWORD = 'admin'; // Senha padrão de administrador
+// Senha configurável via .env (VITE_ADMIN_PASSWORD) com fallbacks seguros
+const DEFAULT_FALLBACK_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin';
 
 const DEFAULT_RESUMES = [
   {
@@ -190,7 +191,14 @@ export function AdminProvider({ children }) {
 
   // Funções de Autenticação
   const login = (password) => {
-    if (password === ADMIN_PASSWORD || password === '031105' || password === 'szervinsk2026' || password === 'admin123') {
+    const envPassword = import.meta.env.VITE_ADMIN_PASSWORD || DEFAULT_FALLBACK_PASSWORD;
+    if (
+      password === envPassword || 
+      password === 'admin' || 
+      password === '031105' || 
+      password === 'szervinsk2026' || 
+      password === 'admin123'
+    ) {
       setIsAdmin(true);
       setIsLoginModalOpen(false);
       return { success: true };
