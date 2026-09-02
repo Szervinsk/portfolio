@@ -92,9 +92,13 @@ export default function ProjectModal({ project, onClose }) {
     setActiveImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   };
 
-  // Trava scroll do body e escuta teclas
+  // Trava scroll do body e html e escuta teclas
   useEffect(() => {
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -115,7 +119,8 @@ export default function ProjectModal({ project, onClose }) {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = prevBodyOverflow || '';
+      document.documentElement.style.overflow = prevHtmlOverflow || '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose, isLightboxOpen, isEditing, images.length]);

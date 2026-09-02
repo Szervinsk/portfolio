@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, X, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 
@@ -6,6 +6,19 @@ export default function AdminLoginModal() {
   const { isAdmin, isLoginModalOpen, setIsLoginModalOpen, login } = useAdmin();
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  useEffect(() => {
+    if (!isLoginModalOpen || isAdmin) return;
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = prevBody || '';
+      document.documentElement.style.overflow = prevHtml || '';
+    };
+  }, [isLoginModalOpen, isAdmin]);
 
   if (!isLoginModalOpen || isAdmin) return null;
 

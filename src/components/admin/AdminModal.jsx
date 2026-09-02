@@ -67,6 +67,19 @@ export default function AdminModal() {
   const [generatedResume, setGeneratedResume] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
 
+  React.useEffect(() => {
+    if (!isAdminModalOpen) return;
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = prevBody || '';
+      document.documentElement.style.overflow = prevHtml || '';
+    };
+  }, [isAdminModalOpen]);
+
   if (!isAdminModalOpen) return null;
 
   const handleLoginSubmit = (e) => {
