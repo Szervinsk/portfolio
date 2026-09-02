@@ -61,7 +61,7 @@ export default function Navbar({ activeSection }) {
         {/* Desktop Nav Items */}
         <nav className="hidden md:flex items-center gap-0.5">
           {navLinks.map((item) => {
-            const isActive = activeSection === item.id;
+            const isActive = activeSection === item.id || (item.id === 'projetos' && String(activeSection).startsWith('projeto'));
             return (
               <a
                 key={item.href}
@@ -141,16 +141,23 @@ export default function Navbar({ activeSection }) {
           </div>
 
           <div className="flex flex-col gap-1">
-            {navLinks.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-xl text-sm font-black text-zinc-800 hover:bg-zinc-100 hover:translate-x-2 transition-transform"
-              >
-                {item.label}
-              </a>
-            ))}
+            {navLinks.map((item) => {
+              const isActive = activeSection === item.id || (item.id === 'projetos' && String(activeSection).startsWith('projeto'));
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-3 py-2 rounded-xl text-sm font-black transition-transform ${
+                    isActive
+                      ? 'bg-zinc-900 text-white translate-x-1'
+                      : 'text-zinc-800 hover:bg-zinc-100 hover:translate-x-2'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
 
           <div className="mt-4 pt-4 border-t border-zinc-200 flex flex-col gap-3">

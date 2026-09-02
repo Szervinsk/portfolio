@@ -3,27 +3,10 @@ import { Sparkles, LogOut, Lock, LayoutDashboard, ArrowRight } from 'lucide-reac
 import { useAdmin } from '../../context/AdminContext';
 
 export default function EditorToolbar() {
-  const { isAdmin, setIsLoginModalOpen, logout } = useAdmin();
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const { isAdmin, isLoginModalOpen, setIsLoginModalOpen, logout } = useAdmin();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 1. Detecta se o Footer (#contato) está visível na tela para visitantes normais
-  useEffect(() => {
-    const footerElement = document.getElementById('contato');
-    if (!footerElement) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFooterVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(footerElement);
-    return () => observer.disconnect();
-  }, []);
-
-  // 2. Detecta se qualquer modal está aberta (overflow: hidden no body)
+  // Detecta se qualquer modal está aberta (overflow: hidden no body)
   useEffect(() => {
     const checkModal = () => {
       const isLocked = document.body.style.overflow === 'hidden';
@@ -38,8 +21,8 @@ export default function EditorToolbar() {
     return () => observer.disconnect();
   }, []);
 
-  // Se não for admin, esconde quando o footer estiver na tela. Se for admin, esconde apenas se modal estiver aberta.
-  const shouldHide = isModalOpen || (!isAdmin && isFooterVisible);
+  // Esconde apenas se uma modal estiver aberta ou o modal de login estiver ativo
+  const shouldHide = isModalOpen || isLoginModalOpen;
 
   return (
     <div 
@@ -76,11 +59,11 @@ export default function EditorToolbar() {
             <a href="#carta" className="hover:text-white transition-colors">Currículo</a>
             <span>•</span>
             <a 
-              href="#admin-hub" 
+              href="#admin-email" 
               className="bg-yellow-300 hover:bg-yellow-400 text-zinc-950 px-2 py-0.5 rounded font-black transition-colors flex items-center gap-1 shadow-xs"
             >
               <LayoutDashboard className="w-3 h-3" />
-              <span>Central de Atividades</span>
+              <span>E-mails & IA</span>
             </a>
           </div>
 

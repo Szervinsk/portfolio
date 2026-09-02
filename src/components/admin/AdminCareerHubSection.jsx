@@ -2,32 +2,19 @@ import React, { useState } from 'react';
 import { 
   Mail, 
   Copy, 
-  Check, 
-  Sparkles, 
-  ExternalLink, 
-  FileText, 
-  PlusCircle, 
   Bot, 
-  Send,
-  Code2,
-  CheckCheck,
-  Trash2,
-  Link2,
-  Lock,
-  Layers
+  Code2, 
+  CheckCheck, 
+  ExternalLink, 
+  Lock, 
+  Sparkles,
+  ArrowDown,
+  FileText
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 
 export default function AdminCareerHubSection() {
-  const { 
-    isAdmin, 
-    customResumes, 
-    addCustomResume, 
-    deleteCustomResume, 
-    activeResumeId, 
-    setActiveResumeId 
-  } = useAdmin();
-
+  const { isAdmin } = useAdmin();
   const [copiedSection, setCopiedSection] = useState(null);
 
   // 1. Estados do Formulário de E-mail de Candidatura
@@ -40,15 +27,8 @@ export default function AdminCareerHubSection() {
     'infraestrutura, servidores Linux, ambientes conteinerizados (Docker/microsserviços) e automação de processos com Python'
   );
 
-  // 2. Estados do Cadastro de Novo Currículo
-  const [newResumeForm, setNewResumeForm] = useState({
-    title: '',
-    role: 'Engenheiro de Software',
-    url: '/assets/curriculo-matheus-szervinsk.pdf',
-    fileName: 'curriculo_matheus_szervinsk_novo.pdf',
-    summary: ''
-  });
-  const [resumeSuccess, setResumeSuccess] = useState(false);
+  // 2. Estado da Descrição de Vaga para o Prompt de IA
+  const [jobDescription, setJobDescription] = useState('');
 
   if (!isAdmin) return null;
 
@@ -73,26 +53,30 @@ Matheus Ribeiro Szervinsk
 
 LinkedIn: https://linkedin.com/in/matheus-szervinsk | GitHub: https://github.com/szervinsk`;
 
-  // Prompt de IA pronto para tailoring de currículo
-  const aiPromptText = `Você é um especialista em recrutamento técnico e engenharia de software.
-Abaixo estão os dados reais de Matheus Ribeiro Szervinsk (estudante de Engenharia de Software na UnB, desenvolvedor Full Stack com foco em Python, Laravel, Webhooks, Docker e conformidade LGPD):
+  // Prompt de IA pronto para tailoring de currículo reativo
+  const aiPromptText = `Você é um especialista em recrutamento técnico e engenharia de software de alto nível.
+Abaixo estão os dados reais e validados de Matheus Ribeiro Szervinsk (estudante de Engenharia de Software na UnB, desenvolvedor Full Stack com foco em Python, Laravel, Webhooks, Docker e conformidade LGPD):
 
-[DADOS DO CANDIDATO]
-- Nome: Matheus Ribeiro Szervinsk
-- Formação: Bacharelado em Engenharia de Software - Universidade de Brasília (UnB) | Previsão: 12/2028
-- Experiências Reais:
-  1. Transoft (2025 - Presente): Desenvolvedor Full Stack | PHP (Laravel), AngularJS, PostgreSQL, Webhooks assíncronos, mensageria.
-  2. Caesb (2024 - 2025): Automação com Python | Pipelines de OCR, extração de relatórios via API, redução de 94% de tempo manual, conformidade rigorosa à LGPD.
-- Stacks: Python (FastAPI, Django), PHP (Laravel), React.js, Node.js, PostgreSQL, Docker, Git Flow, Jira/Scrum.
-- Idiomas: Inglês C1 Avançado.
+[DADOS OFICIAIS DO CANDIDATO]
+- Nome Completo: Matheus Ribeiro Szervinsk
+- Formação Acadêmica: Bacharelado em Engenharia de Software - Universidade de Brasília (UnB) | Previsão: 12/2028
+- Experiências Reais de Mercado:
+  1. Transoft (2025 - Presente): Desenvolvedor Full Stack | PHP (Laravel), AngularJS, PostgreSQL, Webhooks assíncronos, mensageria e otimização de queries relacionais.
+  2. Caesb (2024 - 2025): Automação com Python & OCR | Pipelines de OCR, extração e estruturação de documentos sob conformidade estrita da LGPD, redução de 94% do tempo operacional manual.
+  3. AI LAB • UnB (2026 - Presente): Pesquisador / Desenvolvedor de IA | Soluções baseadas em IA generativa, LLMs, NLP e automações open source de impacto comunitário.
+- Competências Técnicas: Python (FastAPI, Django), PHP (Laravel), React.js, Node.js, PostgreSQL, Docker, Linux, Git Flow, CI/CD, Metodologias Ágeis (Jira/Scrum), Conformidade LGPD.
+- Idiomas: Inglês C1 Avançado (fluência para reuniões globais, documentação e escrita técnica).
 
-[INSTRUÇÕES]
-Analise a seguinte descrição de vaga:
+[REQUISITOS DA VAGA ANALISADA]
 """
-[COLE OS REQUISITOS DA VAGA AQUI]
+${jobDescription.trim() || '[COLE A DESCRIÇÃO DA VAGA / REQUISITOS AQUI]'}
 """
 
-Por favor, adapte e reestruture o currículo de Matheus para esta vaga em formato Markdown / LaTeX (Overleaf), destacando os verbos de ação, métricas de impacto e palavras-chave mais relevantes para os sistemas ATS (Applicant Tracking Systems).`;
+[INSTRUÇÕES DE ENGENHARIA DE PROMPT PARA ATS]
+1. Analise profundamente os requisitos, stacks e palavras-chave da vaga descrita acima.
+2. Reestruture e personalize o currículo de Matheus para esta oportunidade em formato Markdown / LaTeX (Overleaf).
+3. Destaque verbos de ação mensuráveis no padrão STAR (Situação, Tarefa, Ação, Resultado) nos projetos e experiências correspondentes.
+4. Mantenha 100% de veracidade com base estrita no perfil de Matheus, priorizando as tecnologias que maximizam o índice de aprovação nos sistemas ATS (Applicant Tracking Systems).`;
 
   const handleCopy = (text, id) => {
     navigator.clipboard.writeText(text);
@@ -100,305 +84,238 @@ Por favor, adapte e reestruture o currículo de Matheus para esta vaga em format
     setTimeout(() => setCopiedSection(null), 2500);
   };
 
-  const handleAddResume = (e) => {
-    e.preventDefault();
-    if (!newResumeForm.title) return;
-
-    addCustomResume({
-      title: newResumeForm.title,
-      role: newResumeForm.role || 'Engenharia de Software',
-      url: newResumeForm.url || '/assets/curriculo-matheus-szervinsk.pdf',
-      fileName: newResumeForm.fileName || 'curriculo_matheus_szervinsk.pdf',
-      summary: newResumeForm.summary || 'Versão personalizada cadastrada via Painel ADM.'
-    });
-
-    setResumeSuccess(true);
-    setTimeout(() => setResumeSuccess(false), 3000);
-    setNewResumeForm({
-      title: '',
-      role: 'Engenheiro de Software',
-      url: '/assets/curriculo-matheus-szervinsk.pdf',
-      fileName: 'curriculo_matheus_szervinsk_novo.pdf',
-      summary: ''
-    });
-  };
-
   return (
-    <section 
-      id="admin-hub" 
-      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] text-zinc-950 relative z-20 border-t-3 border-zinc-950 animate-pop-in"
-    >
-      <div className="max-w-7xl mx-auto w-full">
-        
-        {/* Cabeçalho da Seção Exclusiva em Cores Claras */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-zinc-200 pb-6 mb-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-300 border-2 border-zinc-950 text-zinc-950 text-xs font-mono font-black shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-3">
-              <Lock className="w-3.5 h-3.5" />
-              <span>CENTRAL PRIVADA DE CANDIDATURAS & IA (MODO ADM)</span>
-            </div>
-            
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-zinc-950">
-              Painel de Vagas, Prompts & Templates de E-mail
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-600 font-medium mt-1">
-              Esta seção é uma central exclusiva, posicionada após o rodapé, visível somente quando o Modo Editor está ativado.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono bg-white text-zinc-800 px-3.5 py-1.5 rounded-xl border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] font-bold">
-              ⚡ Status: Editor Conectado
-            </span>
-          </div>
-        </div>
-
-        {/* Grid Principal de Ferramentas em Fundo Claro */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <>
+      {/* ========================================================================= */}
+      {/* 1. SEÇÃO SNAP: GERADOR DE E-MAILS DE CANDIDATURA (MODO ADM)               */}
+      {/* ========================================================================= */}
+      <section 
+        id="admin-email" 
+        className="snap-section min-h-screen py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] text-zinc-950 relative z-20 border-t-3 border-zinc-950 flex flex-col justify-center items-center"
+      >
+        <div className="max-w-6xl mx-auto w-full">
           
-          {/* =========================================================
-              COLUNA ESQUERDA (6 Colunas): GERADOR DE E-MAIL PARA VAGAS
-          ========================================================= */}
-          <div className="lg:col-span-6 bg-white border-2 border-zinc-950 p-5 sm:p-7 rounded-3xl shadow-[5px_5px_0px_rgba(24,24,27,1)] space-y-4">
-            <div className="flex items-center justify-between border-b-2 border-zinc-100 pb-3">
-              <div className="flex items-center gap-2">
-                <Mail className="w-5 h-5 text-purple-700" />
-                <h3 className="text-sm font-black text-zinc-950 uppercase tracking-wide">
-                  1. Modelo de E-mail para Empresas (Sem Emojis)
-                </h3>
+          {/* Cabeçalho */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-zinc-200 pb-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-300 border-2 border-zinc-950 text-zinc-950 text-[11px] font-mono font-black shadow-[2px_2px_0px_rgba(0,0,0,1)] mb-2">
+                <Lock className="w-3.5 h-3.5" />
+                <span>CENTRAL DE CANDIDATURAS • MODO ADM</span>
               </div>
-
-              <button
-                onClick={() => handleCopy(emailBody, 'email')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-yellow-300 hover:bg-yellow-400 text-zinc-950 text-xs font-black border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
-              >
-                {copiedSection === 'email' ? <CheckCheck className="w-3.5 h-3.5 text-emerald-800" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedSection === 'email' ? 'Copiado!' : 'Copiar E-mail'}</span>
-              </button>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-zinc-950">
+                Gerador de E-mail para Vagas & Apresentação
+              </h2>
             </div>
 
-            {/* Formulário de customização rápida */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Saudação & Destinatário</label>
-                <input
-                  type="text"
-                  value={greeting}
-                  onChange={(e) => setGreeting(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Vaga / Cargo</label>
-                <input
-                  type="text"
-                  value={roleName}
-                  onChange={(e) => setRoleName(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Localização</label>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Disponibilidade</label>
-                <input
-                  type="text"
-                  value={availability}
-                  onChange={(e) => setAvailability(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Habilidades Chave a Enfatizar</label>
-                <textarea
-                  rows={2}
-                  value={skillsHighlight}
-                  onChange={(e) => setSkillsHighlight(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white"
-                />
-              </div>
-            </div>
-
-            {/* Prévia do E-mail */}
-            <div className="p-4 bg-zinc-50 rounded-2xl border-2 border-zinc-200">
-              <pre className="text-xs font-mono text-zinc-800 whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto no-scrollbar select-all">
-                {emailBody}
-              </pre>
-            </div>
+            <button
+              onClick={() => handleCopy(emailBody, 'email')}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-yellow-300 hover:bg-yellow-400 text-zinc-950 text-xs font-black border-2 border-zinc-950 shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
+            >
+              {copiedSection === 'email' ? <CheckCheck className="w-4 h-4 text-emerald-800" /> : <Copy className="w-4 h-4" />}
+              <span>{copiedSection === 'email' ? 'Copiado para Transferência!' : 'Copiar E-mail Formatado'}</span>
+            </button>
           </div>
 
-          {/* =========================================================
-              COLUNA DIREITA (6 Colunas): PROMPT DE IA + LINKS + CADASTRO
-          ========================================================= */}
-          <div className="lg:col-span-6 space-y-6">
+          {/* Grid do Formulário e Prévia */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* CARD 2: PROMPT DE IA OTIMIZADO PARA GERAR CURRÍCULOS */}
-            <div className="bg-white border-2 border-zinc-950 p-5 sm:p-6 rounded-3xl shadow-[5px_5px_0px_rgba(24,24,27,1)] space-y-3">
-              <div className="flex items-center justify-between border-b-2 border-zinc-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-violet-600" />
-                  <h3 className="text-sm font-black text-zinc-950 uppercase tracking-wide">
-                    2. Prompt de IA para Tailoring de Currículo
-                  </h3>
+            {/* Coluna Esquerda: Configuração dos Parâmetros */}
+            <div className="lg:col-span-5 bg-white border-2 border-zinc-950 p-5 rounded-3xl shadow-[4px_4px_0px_rgba(24,24,27,1)] space-y-3">
+              <div className="flex items-center gap-2 border-b border-zinc-100 pb-2">
+                <Mail className="w-4 h-4 text-purple-700" />
+                <h3 className="text-xs font-mono font-black uppercase text-zinc-950">Parâmetros da Vaga</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                <div>
+                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Saudação</label>
+                  <input
+                    type="text"
+                    value={greeting}
+                    onChange={(e) => setGreeting(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white text-xs font-medium"
+                  />
                 </div>
 
-                <button
-                  onClick={() => handleCopy(aiPromptText, 'prompt')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-200 hover:bg-violet-300 text-zinc-950 text-xs font-black border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
-                >
-                  {copiedSection === 'prompt' ? <CheckCheck className="w-3.5 h-3.5 text-emerald-800" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedSection === 'prompt' ? 'Copiado!' : 'Copiar Prompt'}</span>
-                </button>
+                <div>
+                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Cargo / Vaga</label>
+                  <input
+                    type="text"
+                    value={roleName}
+                    onChange={(e) => setRoleName(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white text-xs font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Localização</label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white text-xs font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Carga Horária</label>
+                  <input
+                    type="text"
+                    value={availability}
+                    onChange={(e) => setAvailability(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white text-xs font-medium"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Habilidades Principais</label>
+                  <textarea
+                    rows={2}
+                    value={skillsHighlight}
+                    onChange={(e) => setSkillsHighlight(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900 focus:bg-white text-xs font-medium"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Coluna Direita: Prévia Visual Formatada */}
+            <div className="lg:col-span-7 bg-white border-2 border-zinc-950 p-5 rounded-3xl shadow-[4px_4px_0px_rgba(24,24,27,1)] flex flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-zinc-100 pb-2 mb-3">
+                <span className="text-[11px] font-mono font-bold text-zinc-500">
+                  Prévia em Tempo Real (Tom Executivo / Sem Emojis)
+                </span>
+                <span className="text-[10px] font-mono bg-emerald-100 text-emerald-900 font-black px-2 py-0.5 rounded border border-emerald-300">
+                  ● Pronto para Envio
+                </span>
               </div>
 
-              <p className="text-xs text-zinc-600 font-medium">
-                Copie este prompt pré-formatado, cole no ChatGPT / Claude / Gemini com a descrição da vaga para gerar o currículo ajustado sob medida:
-              </p>
-
-              <div className="p-3.5 bg-zinc-50 rounded-2xl border-2 border-zinc-200">
-                <pre className="text-[11px] font-mono text-zinc-800 whitespace-pre-wrap leading-relaxed max-h-36 overflow-y-auto no-scrollbar">
-                  {aiPromptText}
+              <div className="p-3.5 bg-zinc-50 rounded-2xl border-2 border-zinc-200 overflow-hidden">
+                <pre className="text-[11px] font-mono text-zinc-800 whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto select-all">
+                  {emailBody}
                 </pre>
               </div>
             </div>
 
-            {/* CARD 3: LINKS ÚTEIS DE PRODUÇÃO (OVERLEAF, LATEX, DRIVE) */}
-            <div className="bg-white border-2 border-zinc-950 p-5 rounded-3xl shadow-[5px_5px_0px_rgba(24,24,27,1)] space-y-3">
-              <div className="flex items-center gap-2 border-b-2 border-zinc-100 pb-2.5">
-                <Link2 className="w-4 h-4 text-emerald-600" />
-                <h3 className="text-xs font-black text-zinc-950 uppercase tracking-wide">
-                  3. Links Rápidos para Geração de PDF (Overleaf / LaTeX)
-                </h3>
+          </div>
+
+          {/* Hint para a Próxima Seção */}
+          <div className="w-full text-center mt-6">
+            <a 
+              href="#admin-prompt"
+              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-zinc-500 hover:text-zinc-950 transition-colors"
+            >
+              <span>Avançar para: Central de IA (Tailoring de Currículo)</span>
+              <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 2. SEÇÃO SNAP: PROMPT DE IA DEDICADO PARA TAILORING DE CURRÍCULO          */}
+      {/* ========================================================================= */}
+      <section 
+        id="admin-prompt" 
+        className="snap-section min-h-screen py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#090d16] text-white relative z-20 border-t-3 border-zinc-950 flex flex-col justify-center items-center"
+      >
+        <div className="max-w-6xl mx-auto w-full">
+          
+          {/* Cabeçalho da Central de IA */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-4 mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-400 text-zinc-950 text-[11px] font-mono font-black border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(255,255,255,0.2)] mb-2">
+                <Bot className="w-3.5 h-3.5 text-zinc-950" />
+                <span>INTELIGÊNCIA ARTIFICIAL & ATS • MODO ADM</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Tailoring & Otimização de Currículo com IA
+              </h2>
+            </div>
+
+            {/* Links Rápidos e Ação de Cópia */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href="https://www.overleaf.com/project"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 transition-colors"
+              >
+                <span>Overleaf LaTeX</span>
+                <ExternalLink className="w-3 h-3 text-zinc-400" />
+              </a>
+
+              <button
+                onClick={() => handleCopy(aiPromptText, 'prompt')}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-300 hover:bg-violet-400 text-zinc-950 text-xs font-black border-2 border-zinc-950 shadow-[3px_3px_0px_rgba(255,255,255,0.2)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
+              >
+                {copiedSection === 'prompt' ? <CheckCheck className="w-4 h-4 text-emerald-800" /> : <Copy className="w-4 h-4 text-zinc-950" />}
+                <span>{copiedSection === 'prompt' ? 'Prompt Copiado!' : 'Copiar Prompt Completo'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Grid Principal Dedicado com Área de Entrada e Saída */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            
+            {/* Coluna 1: Entrada da Vaga (Job Description) */}
+            <div className="lg:col-span-5 bg-zinc-900/90 border-2 border-zinc-800 p-5 rounded-3xl flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5 mb-3">
+                  <h3 className="text-xs font-mono font-black uppercase text-violet-400">
+                    1. Requisitos da Vaga (Cole aqui)
+                  </h3>
+                  <span className="text-[10px] font-mono text-zinc-500">Live Embedding</span>
+                </div>
+
+                <p className="text-xs text-zinc-400 mb-3 font-medium">
+                  Cole o texto ou requisitos da vaga abaixo para embutir instantaneamente no prompt formatado ao lado:
+                </p>
+
+                <textarea
+                  rows={8}
+                  value={jobDescription}
+                  onChange={(e) => setJobDescription(e.target.value)}
+                  placeholder="Exemplo: Procuramos Desenvolvedor Python com vivência em FastAPI, Docker, microsserviços, PostgreSQL e conformidade com a LGPD..."
+                  className="w-full p-3.5 rounded-2xl bg-zinc-950 border-2 border-zinc-700 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-violet-400 font-sans leading-relaxed"
+                />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <a
-                  href="https://www.overleaf.com/project"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 bg-zinc-50 hover:bg-emerald-50 rounded-xl border-2 border-zinc-950 flex items-center justify-between transition-colors group shadow-xs"
-                >
-                  <span className="font-bold text-zinc-950 group-hover:text-emerald-950">Overleaf LaTeX Editor</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-950" />
-                </a>
-
-                <a
-                  href="https://github.com/szervinsk"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-3 bg-zinc-50 hover:bg-emerald-50 rounded-xl border-2 border-zinc-950 flex items-center justify-between transition-colors group shadow-xs"
-                >
-                  <span className="font-bold text-zinc-950 group-hover:text-emerald-950">GitHub (Repositórios)</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-950" />
-                </a>
+              <div className="mt-4 p-3 bg-zinc-950/60 rounded-xl border border-zinc-800/80 text-[11px] text-zinc-400 font-mono">
+                💡 <strong>Dica ATS:</strong> O prompt ajusta métricas STAR e tags automaticamente no padrão de aprovação de recrutadores.
               </div>
             </div>
 
-            {/* CARD 4: CADASTRAR NOVA VERSÃO DE CURRÍCULO DIRETAMENTE NO SITE */}
-            <div className="bg-white border-2 border-zinc-950 p-5 rounded-3xl shadow-[5px_5px_0px_rgba(24,24,27,1)] space-y-3">
-              <div className="flex items-center gap-2 border-b-2 border-zinc-100 pb-2.5">
-                <PlusCircle className="w-4 h-4 text-yellow-600" />
-                <h3 className="text-xs font-black text-zinc-950 uppercase tracking-wide">
-                  4. Cadastrar Novo Currículo no Portfólio
-                </h3>
+            {/* Coluna 2: Prompt Gerado em Tempo Real (Grande e Destacado) */}
+            <div className="lg:col-span-7 bg-zinc-900 border-2 border-zinc-800 p-5 rounded-3xl flex flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5 mb-3">
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-emerald-400" />
+                  <h3 className="text-xs font-mono font-black uppercase text-emerald-400">
+                    2. Prompt Otimizado para IA (Pronto para Uso)
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded border border-zinc-700 font-bold">
+                  ChatGPT • Claude • Gemini
+                </span>
               </div>
 
-              {resumeSuccess && (
-                <div className="p-3 rounded-xl bg-emerald-100 border-2 border-emerald-500 text-emerald-950 text-xs font-bold flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-700" />
-                  <span>Currículo cadastrado e disponibilizado no seletor de modelos da LetterSection!</span>
-                </div>
-              )}
+              <div className="p-4 bg-zinc-950 rounded-2xl border-2 border-zinc-800 overflow-hidden flex-1">
+                <pre className="text-[11px] font-mono text-zinc-300 whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto select-all">
+                  {aiPromptText}
+                </pre>
+              </div>
 
-              <form onSubmit={handleAddResume} className="space-y-3 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Título da Versão *</label>
-                    <input
-                      type="text"
-                      required
-                      value={newResumeForm.title}
-                      onChange={(e) => setNewResumeForm({ ...newResumeForm, title: e.target.value })}
-                      placeholder="Ex: Versão Cloud & DevOps"
-                      className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Foco / Cargo</label>
-                    <input
-                      type="text"
-                      value={newResumeForm.role}
-                      onChange={(e) => setNewResumeForm({ ...newResumeForm, role: e.target.value })}
-                      placeholder="Ex: Cloud Engineer"
-                      className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Caminho do PDF (/assets/...)</label>
-                    <input
-                      type="text"
-                      value={newResumeForm.url}
-                      onChange={(e) => setNewResumeForm({ ...newResumeForm, url: e.target.value })}
-                      placeholder="/assets/curriculo-matheus-szervinsk.pdf"
-                      className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Nome do Arquivo</label>
-                    <input
-                      type="text"
-                      value={newResumeForm.fileName}
-                      onChange={(e) => setNewResumeForm({ ...newResumeForm, fileName: e.target.value })}
-                      placeholder="curriculo_matheus_szervinsk_cloud.pdf"
-                      className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-mono font-bold text-zinc-700 uppercase mb-1">Resumo Curto das Competências</label>
-                  <input
-                    type="text"
-                    value={newResumeForm.summary}
-                    onChange={(e) => setNewResumeForm({ ...newResumeForm, summary: e.target.value })}
-                    placeholder="Enfatiza Docker, microsserviços, Linux e automações em Python."
-                    className="w-full px-3 py-1.5 rounded-xl bg-zinc-50 border-2 border-zinc-950 text-zinc-900"
-                  />
-                </div>
-
-                <div className="flex justify-end pt-1">
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-xl bg-yellow-300 hover:bg-yellow-400 text-zinc-950 font-black text-xs border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(0,0,0,1)] cursor-pointer flex items-center gap-1.5"
-                  >
-                    <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Adicionar Modelo à Plataforma</span>
-                  </button>
-                </div>
-              </form>
+              <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-zinc-500 pt-2 border-t border-zinc-800">
+                <span>Clique no botão superior para copiar e enviar ao seu modelo de preferência.</span>
+              </div>
             </div>
 
           </div>
 
         </div>
-
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

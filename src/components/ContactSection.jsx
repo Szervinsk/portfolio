@@ -38,8 +38,8 @@ export default function ContactSection() {
   };
 
   return (
-    <footer id="contato" className="snap-section relative z-20 bg-[#07120a] text-zinc-100 overflow-hidden border-t-2 border-emerald-900/40">
-      <div className="relative min-h-[70vh] py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-cutting-mat overflow-hidden border-b border-emerald-900/50 flex flex-col justify-center">
+    <footer id="contato" className="snap-section relative z-20 bg-[#07120a] text-zinc-100 overflow-hidden border-t-2 border-emerald-900/40 min-h-screen flex flex-col justify-between">
+      <div className="relative flex-1 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-cutting-mat overflow-hidden border-b border-emerald-900/50 flex flex-col justify-center">
         
         {/* Ambient Dark Vignette around edges */}
         <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.6)]" />

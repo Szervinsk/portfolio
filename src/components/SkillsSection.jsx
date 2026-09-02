@@ -87,27 +87,27 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] relative z-20 flex flex-col justify-center">
-      <div className="max-w-5xl mx-auto w-full">
+    <section id="skills" className="snap-section min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] relative z-20 flex flex-col justify-center items-center">
+      <div className="max-w-5xl mx-auto w-full flex flex-col items-center">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] text-[11px] font-bold text-zinc-900 mb-2.5">
+        <div className="text-center max-w-2xl mx-auto mb-5 sm:mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2px_2px_0px_rgba(24,24,27,1)] text-[11px] font-bold text-zinc-900 mb-2">
             <Boxes className="w-3.5 h-3.5 text-purple-600" />
             <span>{t.skills.badge}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-zinc-950 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight">
             {t.skills.titleMain} <span className="font-serif italic font-normal text-purple-700">{t.skills.titleItalic}</span>
           </h2>
           
-          <p className="mt-2.5 text-zinc-700 text-xs sm:text-sm">
+          <p className="mt-1.5 text-zinc-700 text-xs sm:text-sm font-medium">
             {t.skills.subtitle}
           </p>
         </div>
 
         {/* Category Filters + Botão de Adicionar Skill (se Admin) */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4">
           {categoriesList.map((cat) => (
             <button
               key={cat.id}
@@ -288,9 +288,9 @@ export default function SkillsSection() {
         </div>
 
         {/* Bottom Banner */}
-        <div className="mt-8 p-5 rounded-2xl bg-zinc-900 text-white border-2 border-zinc-950 shadow-[4px_4px_0px_rgba(24,24,27,1)] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-4 sm:mt-5 p-3.5 sm:p-4 rounded-2xl bg-zinc-900 text-white border-2 border-zinc-950 shadow-[3px_3px_0px_rgba(24,24,27,1)] flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-9 h-9 rounded-xl bg-yellow-400 text-zinc-950 flex items-center justify-center font-black shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-yellow-400 text-zinc-950 flex items-center justify-center font-black shrink-0">
               <Code2 className="w-4 h-4 text-zinc-950" />
             </div>
             <div>
@@ -305,7 +305,7 @@ export default function SkillsSection() {
 
           <a
             href="#contato"
-            className="px-4 py-2 rounded-xl bg-white hover:bg-yellow-300 text-zinc-900 font-bold text-xs border-2 border-zinc-900 shadow-[2px_2px_0px_rgba(255,255,255,1)] shrink-0 transition-colors"
+            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-yellow-300 text-zinc-900 font-bold text-xs border-2 border-zinc-900 shadow-[2px_2px_0px_rgba(255,255,255,1)] shrink-0 transition-colors"
           >
             {t.skills.bannerBtn}
           </a>
