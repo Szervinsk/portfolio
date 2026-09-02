@@ -127,7 +127,6 @@ export const translations = {
         {
           id: 'salvadocs',
           title: 'SalvaDocs',
-          emoji: '📄✨',
           subtitle: 'Aplicação desktop full-stack para extração de metadados complexos via IA generativa.',
           category: 'Automação & IA',
           period: '2023 - 2024',
@@ -178,7 +177,6 @@ export const translations = {
         {
           id: 'participemais',
           title: 'Participe+',
-          emoji: '🏛️🛡️',
           subtitle: 'Rede social cidadã mobile focada em simplificação de políticas públicas via NLP e IA.',
           category: 'Mobile, NLP & GovTech',
           period: '2024 - 2025',
@@ -225,7 +223,6 @@ export const translations = {
         {
           id: 'unbook',
           title: 'UnBook',
-          emoji: '📚🔄',
           subtitle: 'Marketplace acadêmico full-stack focado na economia circular e troca de livros.',
           category: 'Marketplace & Comunidade',
           period: '2023 - 2024',
@@ -236,8 +233,11 @@ export const translations = {
           badgeBg: 'bg-[#d8b4fe]',
           coverImage: '/assets/images/unbook1.jpeg',
           galleryImages: [
-            { url: '/assets/images/unbook1.jpeg', caption: 'Logomarca' },
+            { url: '/assets/images/unbook1.jpeg', caption: 'Logo marca' },
             { url: '/assets/images/unbook2.jpeg', caption: 'Time UnBook' },
+            { url: '/assets/images/unbook3.jpeg', caption: 'Tela Principal' },
+            { url: '/assets/images/unbook4.jpeg', caption: 'Tela de Pesquisa' },
+            { url: '/assets/images/unbook5.jpeg', caption: 'Pesquisando um professor pelo nome' },
           ],
           github: 'https://github.com/y123yuri/Projeto-ds',
           figma: null,
@@ -485,7 +485,6 @@ export const translations = {
         {
           id: 'salvadocs',
           title: 'SalvaDocs',
-          emoji: '📄✨',
           subtitle: 'Full-stack desktop app for complex metadata extraction via generative AI.',
           category: 'Automation & AI',
           period: '2023 - 2024',
@@ -536,7 +535,6 @@ export const translations = {
         {
           id: 'participemais',
           title: 'Participe+',
-          emoji: '🏛️🛡️',
           subtitle: 'Mobile citizen social network focused on public policy simplification via NLP and AI.',
           category: 'Mobile, NLP & GovTech',
           period: '2024 - 2025',
@@ -583,8 +581,7 @@ export const translations = {
         {
           id: 'unbook',
           title: 'UnBook',
-          emoji: '📚🔄',
-          subtitle: 'Full-stack academic marketplace focused on the circular economy and textbook exchange.',
+          subtitle: 'Academic marketplace for textbook exchange and circular economy.',
           category: 'Marketplace & Community',
           period: '2023 - 2024',
           description: 'Web platform designed to foster the circular economy of academic materials, connecting university students for secure negotiations.',
@@ -596,6 +593,9 @@ export const translations = {
           galleryImages: [
             { url: '/assets/images/unbook1.jpeg', caption: 'Logomark' },
             { url: '/assets/images/unbook2.jpeg', caption: 'Team UnBook' },
+            { url: '/assets/images/unbook3.jpeg', caption: 'Main Screen' },
+            { url: '/assets/images/unbook4.jpeg', caption: 'Search Feature' },
+            { url: '/assets/images/unbook5.jpeg', caption: 'Searching a teacher by its name' },
           ],
           github: 'https://github.com/y123yuri/Projeto-ds',
           figma: null,
