@@ -60,10 +60,10 @@ function PortfolioApp() {
         {/* Seções Públicas */}
         <HeroSection />
         <AboutMeSection />
-        <AboutSection />
-        <SkillsSection />
-        <ProjectsSection />
         <ExperienceSection />
+        <ProjectsSection />
+        <SkillsSection />
+        <AboutSection />
         <LetterSection />
 
         {/* Seção Exclusiva de Vagas & Prompts de IA (Visível apenas em Modo ADM) */}

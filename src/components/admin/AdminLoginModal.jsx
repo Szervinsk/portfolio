@@ -76,9 +76,6 @@ export default function AdminLoginModal() {
             {loginError && (
               <p className="text-[11px] text-red-600 font-bold mt-1">{loginError}</p>
             )}
-            <p className="text-[10px] font-mono text-zinc-400 mt-1">
-              Dica padrão: <code>admin</code>
-            </p>
           </div>
 
           <button

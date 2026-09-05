@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Copy, CheckCircle2, ArrowUpRight, MapPin, ArrowUp } from 'lucide-react';
+import { Mail, Copy, CheckCircle2, ArrowUpRight, MapPin, ArrowUp, Lock } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 import { siteConfig } from '../content/siteConfig';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdmin } from '../context/AdminContext';
 
 export default function ContactSection() {
   const [copied, setCopied] = useState(false);
   const [time, setTime] = useState('');
+  const [brandClicks, setBrandClicks] = useState(0);
   const { t } = useLanguage();
+  const { isAdmin, setIsLoginModalOpen } = useAdmin();
+
+  const handleBrandClick = () => {
+    setBrandClicks((prev) => {
+      const next = prev + 1;
+      if (next >= 3) {
+        setIsLoginModalOpen(true);
+        return 0;
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (brandClicks > 0) {
+      const timer = setTimeout(() => setBrandClicks(0), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [brandClicks]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -38,7 +59,7 @@ export default function ContactSection() {
   };
 
   return (
-    <footer id="contato" className="snap-section relative z-20 bg-[#07120a] text-zinc-100 overflow-hidden border-t-2 border-emerald-900/40 min-h-screen flex flex-col justify-between">
+    <footer id="contato" className="snap-section relative z-20 bg-[#07120a] w-[100%] text-zinc-100 overflow-hidden border-t-2 border-emerald-900/40 min-h-screen flex flex-col justify-between">
       <div className="relative flex-1 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-cutting-mat overflow-hidden border-b border-emerald-900/50 flex flex-col justify-center">
         
         {/* Ambient Dark Vignette around edges */}
@@ -91,11 +112,12 @@ export default function ContactSection() {
       {/* ========================================================================= */}
       {/* 2. MINIMALIST DARK FOOTER BAR */}
       {/* ========================================================================= */}
-      <div className="bg-[#050b07] py-5 px-4 sm:px-6 lg:px-8 border-t border-zinc-800/80">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3.5 text-[11px] font-mono text-zinc-400">
+      <div className="bg-[#050b07] py-5 px-4 sm:px-6 lg:px-8 border-t border-zinc-800/80 relative">
+        {/* Informações Centralizadas */}
+        <div className="max-w-full mx-auto flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-zinc-400">
           
-          {/* Left Navigation Links */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3.5 font-bold">
+          {/* Links de Navegação */}
+          <div className="flex flex-wrap items-center justify-center gap-3.5 font-bold">
             <a href="#sobre" className="hover:text-white transition-colors">{t.contact.footerLinks.about}</a>
             <a href="#atuacoes" className="hover:text-white transition-colors">{t.contact.footerLinks.atuacoes}</a>
             <a href="#skills" className="hover:text-white transition-colors">{t.contact.footerLinks.skills}</a>
@@ -111,15 +133,23 @@ export default function ContactSection() {
             </a>
           </div>
 
-          {/* Center Brand Identity */}
-          <div className="flex items-center gap-1.5 text-white font-black tracking-tight text-xs">
+          <span className="hidden md:inline text-zinc-700">|</span>
+
+          {/* Identidade / Marca (com easter egg de 3 cliques) */}
+          <div 
+            onClick={handleBrandClick}
+            className="flex items-center gap-1.5 text-white font-black tracking-tight text-xs cursor-default select-none"
+            title="Matheus Szervinsk"
+          >
             <div className="w-4.5 h-4.5 rounded-full bg-emerald-500 text-zinc-950 flex items-center justify-center text-[9px] font-black">
               MS
             </div>
             <span>Matheus Szervinsk</span>
           </div>
 
-          {/* Right Location & Timezone Clock */}
+          <span className="hidden md:inline text-zinc-700">|</span>
+
+          {/* Localização, Horário & Retornar ao Topo */}
           <div className="flex items-center gap-2.5 text-zinc-400">
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3 text-emerald-400" />
@@ -138,6 +168,20 @@ export default function ContactSection() {
           </div>
 
         </div>
+
+        {/* Botão Secreto de ADM: Isolado totalmente no canto direito */}
+        {!isAdmin && (
+          <div className="absolute right-3 sm:right-6 bottom-3 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2">
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              className="opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity duration-300 p-2 rounded text-zinc-600 hover:text-white cursor-pointer"
+              title="Admin (Ctrl+Shift+A)"
+              aria-label="Admin"
+            >
+              <Lock className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </div>
 
     </footer>

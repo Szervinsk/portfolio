@@ -26,10 +26,10 @@ export default function Navbar({ activeSection }) {
 
   const navLinks = [
     { label: t.nav.about, href: '#sobre', id: 'sobre' },
-    { label: t.nav.atuacoes, href: '#atuacoes', id: 'atuacoes' },
-    { label: t.nav.skills, href: '#skills', id: 'skills' },
-    { label: t.nav.projects, href: '#projetos', id: 'projetos' },
     { label: t.nav.experience, href: '#trajetoria', id: 'trajetoria' },
+    { label: t.nav.projects, href: '#projetos', id: 'projetos' },
+    { label: t.nav.skills, href: '#skills', id: 'skills' },
+    { label: t.nav.atuacoes, href: '#atuacoes', id: 'atuacoes' },
     { label: t.nav.contact, href: '#contato', id: 'contato' },
   ];
 
@@ -85,19 +85,19 @@ export default function Navbar({ activeSection }) {
           <div className="flex items-center bg-zinc-100 p-0.5 rounded-full border border-zinc-200 text-[10px] font-mono font-bold">
             <button
               onClick={() => setLanguage('pt')}
-              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer ${
-                language === 'pt' ? 'bg-zinc-900 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'
+              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer text-sm ${
+                language === 'pt' ? 'bg-green-600 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
-              PT
+              🇧🇷
             </button>
             <button
               onClick={() => setLanguage('en')}
-              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer text-sm ${
                 language === 'en' ? 'bg-zinc-900 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900'
               }`}
             >
-              EN
+              🇺🇸
             </button>
           </div>
 

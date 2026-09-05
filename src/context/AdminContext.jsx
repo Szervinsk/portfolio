@@ -55,6 +55,31 @@ export function AdminProvider({ children }) {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
+  // Listener global: Atalho de Teclado (Ctrl+Shift+A ou Cmd+Shift+A) e Hash (#admin)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        setIsLoginModalOpen((prev) => !prev);
+      }
+    };
+
+    const checkHash = () => {
+      if (window.location.hash === '#admin') {
+        setIsLoginModalOpen(true);
+      }
+    };
+
+    checkHash();
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('hashchange', checkHash);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('hashchange', checkHash);
+    };
+  }, []);
+
   // 1. Skills Customizadas
   const [customSkills, setCustomSkills] = useState(() => {
     try {
