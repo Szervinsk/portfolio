@@ -92,6 +92,44 @@
   transform: translateY(0);
 }
 
+/* ========================================================================= */
+/* ENTRANCE MOTIONS: ELEMENTOS CAINDO NA TELA (DROP-IN) AO ENTRAR NAS SEÇÕES */
+/* ========================================================================= */
+
+.motion-entry {
+  opacity: 0;
+  transform: translateY(-32px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.section-entered .motion-entry,
+.motion-entry.is-entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Delays para transição em cascata (drop-in) */
+.delay-0 { transition-delay: 0ms; }
+.delay-75 { transition-delay: 75ms; }
+.delay-150 { transition-delay: 150ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-250 { transition-delay: 250ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-350 { transition-delay: 350ms; }
+.delay-400 { transition-delay: 400ms; }
+.delay-450 { transition-delay: 450ms; }
+.delay-500 { transition-delay: 500ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-entry {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* --- FUNDOS E TEXTURAS --- */
 
 .bg-designer-grid {
@@ -195,11 +233,11 @@
   }
 }
 
-/* Transição contínua de matiz/cor */
+/* Transição contínua de matiz/cor preservando o blur */
 @keyframes colorCycle {
-  0% { filter: hue-rotate(0deg); }
-  50% { filter: hue-rotate(45deg); }
-  100% { filter: hue-rotate(0deg); }
+  0% { filter: blur(70px) hue-rotate(0deg); }
+  50% { filter: blur(90px) hue-rotate(35deg); }
+  100% { filter: blur(70px) hue-rotate(0deg); }
 }
 
 .animate-blob-morph-1 {

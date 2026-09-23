@@ -1,30 +1,41 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
+const SECTION_IDS = [
+  'hero',
+  'sobre',
+  'trajetoria',
+  'projetos',
+  'skills',
+  'carta',
+  'contato',
+  'admin-email',
+  'admin-prompt'
+];
+
+/**
+ * Hook para navegação fluida por seções (teclado + wheel snapping inteligente)
+ * e orquestração de animações de entrada (drop-in motion) ao entrar em cada seção.
+ */
 export function useSectionNavigation(enabled = true) {
   const [currentSection, setCurrentSection] = useState('hero');
   const isAnimatingRef = useRef(false);
   const lastWheelTimeRef = useRef(0);
+  const animationTimerRef = useRef(null);
 
+  // Retorna os elementos das seções na ordem correta do documento
   const getSectionElements = useCallback(() => {
-    const snapElements = Array.from(document.querySelectorAll('.snap-section'));
-    if (snapElements.length > 0) {
-      return snapElements;
+    // 1. Tenta pelos IDs canônicos definidos
+    const elementsById = SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
+    if (elementsById.length > 0) {
+      return elementsById.filter((el) => el.offsetHeight > 0);
     }
-    const defaultIds = [
-      'hero', 
-      'sobre', 
-      'atuacoes', 
-      'skills', 
-      'projetos', 
-      'trajetoria', 
-      'carta', 
-      'contato', 
-      'admin-email', 
-      'admin-prompt'
-    ];
-    return defaultIds.map((id) => document.getElementById(id)).filter(Boolean);
+
+    // 2. Fallback: elementos com classe .snap-section
+    const snapElements = Array.from(document.querySelectorAll('.snap-section'));
+    return snapElements.filter((el) => el.offsetHeight > 0);
   }, []);
 
+  // Determina o índice da seção visível atual
   const getCurrentIndex = useCallback(() => {
     const elements = getSectionElements();
     if (!elements.length) return 0;
@@ -34,37 +45,29 @@ export function useSectionNavigation(enabled = true) {
     const scrollBottom = scrollY + windowHeight;
     const docHeight = document.documentElement.scrollHeight;
 
-    // Extremos de rolagem
-    if (scrollY <= 40) return 0;
-    if (scrollBottom >= docHeight - 40) return elements.length - 1;
+    // Extremos de rolagem (topo e rodapé)
+    if (scrollY <= 60) return 0;
+    if (scrollBottom >= docHeight - 60) return elements.length - 1;
 
-    // Foco no centro da viewport
-    const viewportFocus = scrollY + windowHeight * 0.45;
+    // Foco a 40% da viewport para uma detecção natural
+    const viewportFocus = scrollY + windowHeight * 0.40;
 
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = elements.length - 1; i >= 0; i--) {
       const el = elements[i];
       const top = el.offsetTop;
-      const bottom = top + el.offsetHeight;
-      if (viewportFocus >= top && viewportFocus < bottom) {
+      if (viewportFocus >= top - 20) {
         return i;
       }
     }
 
-    // Fallback: seção com topo mais próximo
-    let closestIdx = 0;
-    let minDiff = Infinity;
-    elements.forEach((el, idx) => {
-      const diff = Math.abs(el.offsetTop - scrollY);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIdx = idx;
-      }
-    });
-    return closestIdx;
+    return 0;
   }, [getSectionElements]);
 
+  // Transição suave para um índice específico de seção
   const scrollToSectionIndex = useCallback((index) => {
     const elements = getSectionElements();
+    if (!elements.length) return;
+
     const targetIndex = Math.max(0, Math.min(elements.length - 1, index));
     const targetEl = elements[targetIndex];
 
@@ -72,16 +75,22 @@ export function useSectionNavigation(enabled = true) {
       isAnimatingRef.current = true;
       setCurrentSection(targetEl.id);
 
-      const targetTop = targetEl.offsetTop;
+      // Garante a classe de entrada para disparar as animações drop-in imediatamente
+      targetEl.classList.add('section-entered');
 
+      // Scroll suave calibrado
+      const targetTop = targetEl.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
-        top: Math.max(0, targetTop),
+        top: Math.max(0, Math.round(targetTop)),
         behavior: 'smooth'
       });
 
-      setTimeout(() => {
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
+      animationTimerRef.current = setTimeout(() => {
         isAnimatingRef.current = false;
-      }, 500);
+      }, 700);
     }
   }, [getSectionElements]);
 
@@ -98,15 +107,7 @@ export function useSectionNavigation(enabled = true) {
   useEffect(() => {
     if (!enabled) return;
 
-    // Acompanha a rolagem passivamente para atualizar o estado do menu
-    const handleScroll = () => {
-      const index = getCurrentIndex();
-      const elements = getSectionElements();
-      if (elements[index]) {
-        setCurrentSection(elements[index].id);
-      }
-    };
-
+    // Checa se algum modal ou sobreposição bloqueia a navegação de página
     const isModalOpen = () => {
       return (
         document.body.style.overflow === 'hidden' ||
@@ -115,17 +116,61 @@ export function useSectionNavigation(enabled = true) {
       );
     };
 
-    // Navegação por teclado inteligente (1-to-1 snap)
+    // 1. IntersectionObserver para adicionar/remover .section-entered e acionar os motions
+    const elements = getSectionElements();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('section-entered');
+          } else {
+            // Remove quando sair da tela para que re-anime ao entrar novamente
+            entry.target.classList.remove('section-entered');
+          }
+        });
+      },
+      {
+        threshold: [0.15, 0.45],
+        rootMargin: '0px 0px -5% 0px'
+      }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+
+    // Ativa a primeira seção imediatamente se estiver no topo
+    if (elements[0] && window.scrollY <= 100) {
+      elements[0].classList.add('section-entered');
+    }
+
+    // 2. Acompanhamento passivo de rolagem para atualizar a Navbar em tempo real
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const index = getCurrentIndex();
+          const currentEls = getSectionElements();
+          if (currentEls[index] && currentEls[index].id) {
+            setCurrentSection(currentEls[index].id);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // 3. Navegação por Teclado (Setas para cima/baixo, PageUp/PageDown, Espaço)
     const handleKeyDown = (e) => {
+      // Ignora se estiver digitando em campos de texto
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (document.activeElement?.isContentEditable) return;
       if (isModalOpen()) return;
 
+      const currentEls = getSectionElements();
+      if (!currentEls.length) return;
       const currentIndex = getCurrentIndex();
-      const elements = getSectionElements();
-      if (!elements.length) return;
 
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        if (currentIndex < elements.length - 1) {
+        if (currentIndex < currentEls.length - 1) {
           e.preventDefault();
           scrollToSectionIndex(currentIndex + 1);
         }
@@ -137,26 +182,26 @@ export function useSectionNavigation(enabled = true) {
       }
     };
 
-    // Navegação por Mouse Wheel com transições 1-to-1 puras e debounce
+    // 4. Navegação por Mouse Wheel (Scroll com Snap Inteligente)
     const handleWheel = (e) => {
-      // Se qualquer modal estiver aberto, não navega seções em hipótese alguma
       if (isModalOpen()) return;
-
-      if (Math.abs(e.deltaY) < 18) return;
+      if (Math.abs(e.deltaY) < 22) return;
 
       const now = Date.now();
-      if (isAnimatingRef.current || now - lastWheelTimeRef.current < 450) {
+      // Debounce para evitar múltiplos disparos por inércia de trackpad
+      if (isAnimatingRef.current || now - lastWheelTimeRef.current < 600) {
         e.preventDefault();
         return;
       }
 
-      // Checa se o usuário está rolando dentro de um elemento rolável interno (modal, textarea, etc.)
+      // Permite rolagem normal se estiver dentro de um container com scroll interno
       let target = e.target;
       while (target && target !== document.body && target !== document.documentElement) {
-        const overflowY = window.getComputedStyle(target).overflowY;
+        const style = window.getComputedStyle(target);
+        const overflowY = style.overflowY;
         if ((overflowY === 'auto' || overflowY === 'scroll') && target.scrollHeight > target.clientHeight) {
           const isAtTop = target.scrollTop <= 0 && e.deltaY < 0;
-          const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - 1 && e.deltaY > 0;
+          const isAtBottom = target.scrollTop + target.clientHeight >= target.scrollHeight - 2 && e.deltaY > 0;
           if (!isAtTop && !isAtBottom) {
             return; // Permite o scroll interno nativo
           }
@@ -164,20 +209,38 @@ export function useSectionNavigation(enabled = true) {
         target = target.parentElement;
       }
 
-      const elements = getSectionElements();
-      if (!elements.length) return;
-
+      const currentEls = getSectionElements();
+      if (!currentEls.length) return;
       const currentIndex = getCurrentIndex();
+      const currentEl = currentEls[currentIndex];
 
+      // Se a seção atual for mais alta que a janela (ex: projetos com muitos itens em tela pequena),
+      // permite rolar normalmente dentro dela antes de dar o snap para a próxima seção
+      if (currentEl) {
+        const isTallerThanViewport = currentEl.offsetHeight > window.innerHeight + 100;
+        if (isTallerThanViewport) {
+          const elTop = currentEl.offsetTop;
+          const elBottom = elTop + currentEl.offsetHeight;
+          const scrollY = window.scrollY;
+          const viewportBottom = scrollY + window.innerHeight;
+
+          if (e.deltaY > 0 && viewportBottom < elBottom - 80) {
+            return; // Rola naturalmente para ver o restante do conteúdo
+          }
+          if (e.deltaY < 0 && scrollY > elTop + 80) {
+            return; // Rola naturalmente para cima dentro da seção
+          }
+        }
+      }
+
+      // Snap para a próxima seção ou anterior
       if (e.deltaY > 0) {
-        // ROLANDO PARA BAIXO -> Próxima seção
-        if (currentIndex < elements.length - 1) {
+        if (currentIndex < currentEls.length - 1) {
           e.preventDefault();
           lastWheelTimeRef.current = now;
           scrollToSectionIndex(currentIndex + 1);
         }
       } else {
-        // ROLANDO PARA CIMA -> Seção anterior
         if (currentIndex > 0) {
           e.preventDefault();
           lastWheelTimeRef.current = now;
@@ -190,10 +253,17 @@ export function useSectionNavigation(enabled = true) {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('wheel', handleWheel, { passive: false });
 
+    // Checagem inicial
+    handleScroll();
+
     return () => {
+      observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('wheel', handleWheel);
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
     };
   }, [enabled, getCurrentIndex, getSectionElements, scrollToSectionIndex]);
 

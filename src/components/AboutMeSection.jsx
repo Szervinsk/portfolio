@@ -14,7 +14,7 @@ export default function AboutMeSection() {
   const content = t.aboutMe || t.about;
 
   return (
-    <section id="sobre" className="snap-section relative min-h-screen w-full flex items-center justify-center py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f3ff] overflow-hidden border-t-2 border-zinc-950/10">
+    <section id="sobre" className="snap-section relative min-h-screen w-full flex items-center justify-center py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f3ff] overflow-hidden">
       
       {/* Grid decorativo de fundo estilo scrapbook */}
       <div className="absolute inset-0 pointer-events-none opacity-40 bg-dot-pattern" />
@@ -24,13 +24,13 @@ export default function AboutMeSection() {
         <div className="lg:col-span-6 flex flex-col items-start text-left">
           
           {/* Badge de Topo */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] text-[11px] font-mono font-bold text-zinc-900 mb-4 animate-pop-in">
+          <div className="motion-entry delay-0 inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] text-[11px] font-mono font-bold text-zinc-900 mb-4 animate-pop-in">
             <Terminal className="w-3.5 h-3.5 text-purple-600" />
             <span>{content.badge}</span>
           </div>
 
           {/* Título Editorial com Destaque Fluido */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight leading-[1.04] mb-4">
+          <h2 className="motion-entry delay-75 text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight leading-[1.04] mb-4">
             {content.titleMain}{' '}
             <span className="font-serif italic font-normal bg-[#bef264] px-2.5 py-0.5 rounded-2xl border-2 border-zinc-900 shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] inline-block -rotate-1">
               {content.titleHighlight}
@@ -40,12 +40,12 @@ export default function AboutMeSection() {
           </h2>
 
           {/* Descrição Principal */}
-          <p className="text-sm sm:text-base text-zinc-700 font-medium leading-relaxed max-w-lg mb-6">
+          <p className="motion-entry delay-150 text-sm sm:text-base text-zinc-700 font-medium leading-relaxed max-w-lg mb-6">
             {content.description}
           </p>
 
           {/* Ações / Botões */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="motion-entry delay-200 flex flex-wrap items-center gap-3 mb-6">
             <a
               href="#contato"
               className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl border-2 border-zinc-900 shadow-[3px_3px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] transition-all"
@@ -64,7 +64,7 @@ export default function AboutMeSection() {
           </div>
 
           {/* Micro-Card Inferior com Métrica */}
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/90 border-2 border-zinc-900 shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] max-w-sm">
+          <div className="motion-entry delay-250 flex items-center gap-3 p-3 rounded-2xl bg-white/90 border-2 border-zinc-900 shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] max-w-sm">
             <div className="w-9 h-9 rounded-xl bg-purple-200 border-2 border-zinc-900 flex items-center justify-center font-black text-xs text-zinc-900">
               <Sparkles className="w-4 h-4 text-purple-700" />
             </div>
@@ -81,7 +81,7 @@ export default function AboutMeSection() {
         </div>
 
         {/* --- COLUNA DIREITA: COMPOSIÇÃO VISUAL COM FOTO E CARDS --- */}
-        <div className="lg:col-span-6 relative flex items-center justify-center mt-4 lg:mt-0">
+        <div className="motion-entry delay-200 lg:col-span-6 relative flex items-center justify-center mt-4 lg:mt-0">
           
           {/* Selo Circular Giratório */}
           <div className="absolute -top-6 -right-2 sm:-right-4 w-20 h-20 z-30 pointer-events-none hidden sm:flex items-center justify-center">

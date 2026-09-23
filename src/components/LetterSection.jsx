@@ -47,19 +47,19 @@ export default function ResumeHubSection() {
         
         {/* Cabeçalho da Seção */}
         <div className="text-center max-w-lg mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-[11px] font-mono font-bold text-yellow-300 mb-2.5">
+          <div className="motion-entry delay-0 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-700 bg-zinc-900 text-[11px] font-mono font-bold text-yellow-300 mb-2.5">
             <FileText className="w-3.5 h-3.5" />
             <span>RESUME & CREDENTIALS</span>
           </div>
           
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">
+          <h2 className="motion-entry delay-75 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">
             {language === 'pt' ? 'Currículo' : 'Official'}{' '}
             <span className="bg-[#fef08a] font-serif italic font-normal text-zinc-950 px-2.5 py-0.5 rounded-xl border border-zinc-900 inline-block -rotate-1">
               {language === 'pt' ? 'Profissional' : 'Resume'}
             </span>
           </h2>
           
-          <p className="mt-2 text-zinc-400 text-xs sm:text-sm">
+          <p className="motion-entry delay-150 mt-2 text-zinc-400 text-xs sm:text-sm">
             {language === 'pt' 
               ? 'Visualize a versão atualizada em tela cheia ou baixe o PDF para compartilhamento direto.' 
               : 'Inspect the up-to-date document in fullscreen or download the PDF directly.'}
@@ -70,7 +70,7 @@ export default function ResumeHubSection() {
         {isAdmin ? (
           
           /* LAYOUT NO MODO EDITOR (SELETOR LATERAL AMARELO + PRANCHETA CENTRAL) */
-          <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-start animate-pop-in">
+          <div className="motion-entry delay-200 w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-start animate-pop-in">
             
             {/* 1. SELETOR LATERAL DE MODELOS (CAIXA AMARELA) */}
             <div className="md:col-span-5 bg-[#fef08a] text-zinc-950 border-3 border-zinc-950 p-5 rounded-3xl shadow-[6px_6px_0px_rgba(0,0,0,1)] space-y-3.5">
@@ -213,7 +213,7 @@ export default function ResumeHubSection() {
         ) : (
           
           /* LAYOUT PADRÃO PARA VISITANTES */
-          <div className="relative w-full max-w-xl my-2">
+          <div className="motion-entry delay-200 relative w-full max-w-xl my-2">
             {/* Sticky Note lateral direito */}
             <div className="absolute -right-4 sm:-right-0 sm:-top-0 bottom-6 hidden md:block z-30 pointer-events-none">
               <StickyNote

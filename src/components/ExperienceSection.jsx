@@ -281,19 +281,19 @@ export default function ExperienceSection() {
         
         {/* Header Centralizado */}
         <div className="w-full flex flex-col items-center justify-center text-center max-w-2xl mx-auto mb-8 sm:mb-10 relative z-30 px-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2px_2px_0px_rgba(24,24,27,1)] text-[11px] font-black uppercase tracking-widest text-zinc-900 mb-3">
+          <div className="motion-entry delay-0 inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2px_2px_0px_rgba(24,24,27,1)] text-[11px] font-black uppercase tracking-widest text-zinc-900 mb-3">
             <Briefcase className="w-3.5 h-3.5 text-zinc-900" />
             <span>{t.experience?.badge || 'Carreira & Formação'}</span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl font-black text-zinc-950 tracking-tight leading-tight mb-2">
+          <h2 className="motion-entry delay-75 text-3xl sm:text-4xl font-black text-zinc-950 tracking-tight leading-tight mb-2">
             {isPt ? 'Linha do' : 'Career'}{' '}
             <span className="bg-[#fef08a] px-2.5 py-0.5 rounded-xl border-2 border-zinc-900 shadow-[2.5px_2.5px_0px_rgba(24,24,27,1)] inline-block -rotate-1.5 hover:rotate-0 transition-transform">
               {isPt ? 'Tempo' : 'Timeline'}
             </span>
           </h2>
           
-          <p className="text-zinc-600 font-medium text-xs sm:text-sm max-w-lg leading-relaxed">
+          <p className="motion-entry delay-150 text-zinc-600 font-medium text-xs sm:text-sm max-w-lg leading-relaxed">
             {isPt 
               ? 'Marcos contínuos ao longo da minha trajetória na Engenharia de Software, automações e pesquisa em IA.' 
               : 'Milestones across Software Engineering, automations, and applied AI research.'}
@@ -301,7 +301,7 @@ export default function ExperienceSection() {
         </div>
 
         {/* --- DESKTOP: TIMELINE CENTRAL COM CARDS ALTERNADOS (TOP / BOTTOM) --- */}
-        <div className="hidden lg:block relative w-full my-4">
+        <div className="motion-entry delay-225 hidden lg:block relative w-full my-4">
           
           {/* Linha Central Contínua */}
           <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-3.5 bg-zinc-950 rounded-full border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(0,0,0,0.15)] z-10 flex items-center">
@@ -451,7 +451,7 @@ export default function ExperienceSection() {
         </div>
 
         {/* --- MOBILE / TABLET: TIMELINE VERTICAL COM BOTÃO VER DETALHES --- */}
-        <div className="block lg:hidden relative pl-6 space-y-4">
+        <div className="motion-entry delay-225 block lg:hidden relative pl-6 space-y-4">
           <div className="absolute left-2 top-2 bottom-2 w-2.5 bg-zinc-950 rounded-full" />
 
           {milestones.map((node) => (

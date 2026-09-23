@@ -87,27 +87,27 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="snap-section min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] relative z-20 flex flex-col justify-center items-center">
+    <section id="skills" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#fefce8] bg-dot-pattern relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center">
       <div className="max-w-5xl mx-auto w-full flex flex-col items-center">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-5 sm:mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2px_2px_0px_rgba(24,24,27,1)] text-[11px] font-bold text-zinc-900 mb-2">
+          <div className="motion-entry delay-0 inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-zinc-900 bg-white shadow-[2px_2px_0px_rgba(24,24,27,1)] text-[11px] font-bold text-zinc-900 mb-2">
             <Boxes className="w-3.5 h-3.5 text-purple-600" />
             <span>{t.skills.badge}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight">
+          <h2 className="motion-entry delay-75 text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight">
             {t.skills.titleMain} <span className="font-serif italic font-normal text-purple-700">{t.skills.titleItalic}</span>
           </h2>
           
-          <p className="mt-1.5 text-zinc-700 text-xs sm:text-sm font-medium">
+          <p className="motion-entry delay-150 mt-1.5 text-zinc-700 text-xs sm:text-sm font-medium">
             {t.skills.subtitle}
           </p>
         </div>
 
         {/* Category Filters + Botão de Adicionar Skill (se Admin) */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4">
+        <div className="motion-entry delay-200 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4">
           {categoriesList.map((cat) => (
             <button
               key={cat.id}
@@ -220,7 +220,7 @@ export default function SkillsSection() {
         )}
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+        <div className="motion-entry delay-250 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
           {filteredSkills.map((skill) => {
             const Icon = SKILL_ICONS[skill.name] || Terminal;
             const isSelected = activeSkill?.name === skill.name;
