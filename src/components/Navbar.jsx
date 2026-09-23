@@ -29,7 +29,7 @@ export default function Navbar({ activeSection }) {
     { label: t.nav.experience, href: '#trajetoria', id: 'trajetoria' },
     { label: t.nav.projects, href: '#projetos', id: 'projetos' },
     { label: t.nav.skills, href: '#skills', id: 'skills' },
-    { label: t.nav.atuacoes, href: '#atuacoes', id: 'atuacoes' },
+    { label: t.nav.resume || (language === 'pt' ? 'Currículo' : 'Resume'), href: '#carta', id: 'carta' },
     { label: t.nav.contact, href: '#contato', id: 'contato' },
   ];
 
