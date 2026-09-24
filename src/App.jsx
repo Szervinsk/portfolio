@@ -42,7 +42,7 @@ function PortfolioApp() {
         setSelectedProjectId(pid);
         const el = document.getElementById('projetos');
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }
     };
@@ -66,7 +66,7 @@ function PortfolioApp() {
     setSelectedProjectId(projectId);
     const el = document.getElementById('projetos');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, []);
 

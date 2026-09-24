@@ -35,7 +35,7 @@ export function useSectionNavigation(enabled = true) {
     return snapElements.filter((el) => el.offsetHeight > 0);
   }, []);
 
-  // Determina o índice da seção visível atual
+  // Determina o índice da seção visível atual (sincronizado com o alinhamento centralizado)
   const getCurrentIndex = useCallback(() => {
     const elements = getSectionElements();
     if (!elements.length) return 0;
@@ -46,24 +46,29 @@ export function useSectionNavigation(enabled = true) {
     const docHeight = document.documentElement.scrollHeight;
 
     // Extremos de rolagem (topo e rodapé)
-    if (scrollY <= 60) return 0;
-    if (scrollBottom >= docHeight - 60) return elements.length - 1;
+    if (scrollY <= 80) return 0;
+    if (scrollBottom >= docHeight - 80) return elements.length - 1;
 
-    // Foco a 40% da viewport para uma detecção natural
-    const viewportFocus = scrollY + windowHeight * 0.40;
+    // Foco no centro da viewport
+    const viewportCenter = scrollY + windowHeight / 2;
 
-    for (let i = elements.length - 1; i >= 0; i--) {
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < elements.length; i++) {
       const el = elements[i];
-      const top = el.offsetTop;
-      if (viewportFocus >= top - 20) {
-        return i;
+      const elCenter = el.offsetTop + el.offsetHeight / 2;
+      const distance = Math.abs(elCenter - viewportCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = i;
       }
     }
 
-    return 0;
+    return closestIndex;
   }, [getSectionElements]);
 
-  // Transição suave para um índice específico de seção
+  // Transição suave para um índice específico de seção (centralizado na viewport)
   const scrollToSectionIndex = useCallback((index) => {
     const elements = getSectionElements();
     if (!elements.length) return;
@@ -78,12 +83,19 @@ export function useSectionNavigation(enabled = true) {
       // Garante a classe de entrada para disparar as animações drop-in imediatamente
       targetEl.classList.add('section-entered');
 
-      // Scroll suave calibrado
-      const targetTop = targetEl.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: Math.max(0, Math.round(targetTop)),
-        behavior: 'smooth'
-      });
+      // Se for a primeira seção (Hero), rola para o topo absoluto
+      if (targetIndex === 0 || targetEl.id === 'hero') {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        // Centraliza a seção verticalmente na viewport
+        targetEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
 
       if (animationTimerRef.current) {
         clearTimeout(animationTimerRef.current);
@@ -93,6 +105,23 @@ export function useSectionNavigation(enabled = true) {
       }, 700);
     }
   }, [getSectionElements]);
+
+  // Navega para uma seção por ID ou índice
+  const scrollToSection = useCallback((target) => {
+    const elements = getSectionElements();
+    if (!elements.length) return;
+
+    let targetIndex = -1;
+    if (typeof target === 'number') {
+      targetIndex = target;
+    } else if (typeof target === 'string') {
+      targetIndex = elements.findIndex((el) => el.id === target);
+    }
+
+    if (targetIndex !== -1) {
+      scrollToSectionIndex(targetIndex);
+    }
+  }, [getSectionElements, scrollToSectionIndex]);
 
   const goToNext = useCallback(() => {
     const currentIndex = getCurrentIndex();
@@ -249,9 +278,37 @@ export function useSectionNavigation(enabled = true) {
       }
     };
 
+    // 5. Suporte a clique em links internos (#seção) para centralizar
+    const handleAnchorClick = (e) => {
+      const anchor = e.target.closest('a[href^="#"]');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('#/')) return;
+      const sectionId = href.slice(1);
+      const currentEls = getSectionElements();
+      const targetIdx = currentEls.findIndex((el) => el.id === sectionId);
+      if (targetIdx !== -1) {
+        e.preventDefault();
+        scrollToSectionIndex(targetIdx);
+        window.history.pushState(null, '', href);
+      }
+    };
+
+    // 6. Garante que qualquer chamada a scrollIntoView para seções utilize block: 'center'
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function(options) {
+      if (this && (this.classList?.contains('snap-section') || SECTION_IDS.includes(this.id))) {
+        if (typeof options === 'object' && options !== null && !options.block) {
+          return originalScrollIntoView.call(this, { ...options, block: 'center' });
+        }
+      }
+      return originalScrollIntoView.apply(this, arguments);
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('click', handleAnchorClick);
 
     // Checagem inicial
     handleScroll();
@@ -261,11 +318,13 @@ export function useSectionNavigation(enabled = true) {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('click', handleAnchorClick);
+      Element.prototype.scrollIntoView = originalScrollIntoView;
       if (animationTimerRef.current) {
         clearTimeout(animationTimerRef.current);
       }
     };
   }, [enabled, getCurrentIndex, getSectionElements, scrollToSectionIndex]);
 
-  return { currentSection, scrollToSectionIndex, goToNext, goToPrev };
+  return { currentSection, scrollToSection, scrollToSectionIndex, goToNext, goToPrev };
 }
