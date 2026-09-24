@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowDown, ArrowUpRight, Mail } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, Mail, Package, Sparkles } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 import { siteConfig } from '../content/siteConfig';
 import { useLanguage } from '../context/LanguageContext';
@@ -7,42 +7,56 @@ import { useLanguage } from '../context/LanguageContext';
 export default function HeroSection({ onSelectProject, onOpenProject }) {
   const { language } = useLanguage();
   const isPt = language === 'pt';
-  const [hoveredBook, setHoveredBook] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
-  const handleBookClick = (projectId) => {
-    const handler = onSelectProject || onOpenProject;
-    if (handler && projectId) {
-      handler(projectId);
-    } else {
-      document.getElementById('projetos')?.scrollIntoView({ behavior: 'smooth' });
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      window.history.pushState(null, '', `#${sectionId}`);
     }
   };
 
   return (
     <section 
       id="hero" 
-      className="snap-section relative min-h-screen w-full flex flex-col justify-center items-center bg-emerald-300 text-zinc-950 select-none overflow-hidden mb-0"
+      className="snap-section relative min-h-screen w-full flex flex-col justify-between items-center bg-linear-to-b from-[#bef264] to-[#d8b4fe] text-zinc-950 select-none overflow-hidden mb-0"
       style={{
-        backgroundColor: '#5ee9b040',
-        backgroundImage: `
-          radial-gradient(ellipse 60% 40% at 50% 25%, rgba(250, 204, 21, 0.08) 0%, transparent 70%),
-          linear-gradient(rgba(24, 24, 27, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(24, 24, 27, 0.03) 1px, transparent 1px)
-        `,
-        backgroundSize: '100% 100%, 32px 32px, 32px 32px'
+        background: 'linear-gradient(to bottom, #bef264 0%, #d8b4fe 100%)'
       }}
     >
       {/* ======================================================================= */}
-      {/* 1. ELEMENTOS CENTRALIZADOS NO TOPO / MEIO (ATÉ ~70% DA PÁGINA)          */}
+      {/* 0. PADRÃO QUADRICULADO + ILUMINAÇÃO SUAVE                               */}
       {/* ======================================================================= */}
-      <div className="relative z-20 w-full max-w-3xl mx-auto text-center flex flex-col items-center pt-40 sm:pt-24 md:pt-28 px-4">
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(24, 24, 27, 0.085) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(24, 24, 27, 0.085) 1px, transparent 1px)
+          `,
+          backgroundSize: '32px 32px'
+        }}
+      />
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: 'radial-gradient(ellipse 75% 45% at 50% 20%, rgba(255, 255, 255, 0.28) 0%, transparent 70%)'
+        }}
+      />
+
+      {/* ======================================================================= */}
+      {/* 1. ELEMENTOS CENTRALIZADOS NO TOPO / MEIO (TÍTULO, SUBTÍTULO, ALERTAS)  */}
+      {/* ======================================================================= */}
+      <div className="relative z-20 w-full max-w-3xl mx-auto mt-10 text-center flex flex-col items-center pt-24 sm:pt-20 md:pt-22 px-4">
         
         {/* Badge Superior: Promovendo o Repositório do GitHub */}
         <a
           href={siteConfig.socials.github}
           target="_blank"
           rel="noreferrer"
-          className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-zinc-950 bg-white hover:bg-zinc-50 transition-all text-zinc-900 mb-4 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] cursor-pointer"
+          className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-zinc-950 bg-white hover:bg-zinc-50 transition-all text-zinc-900 mb-3 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] cursor-pointer"
         >
           <GithubIcon className="w-3.5 h-3.5 text-zinc-950 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-wider uppercase">
@@ -51,8 +65,8 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
           <ArrowUpRight className="w-3 h-3 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
         </a>
 
-        {/* Título Principal Editorial Fiel à Estrutura da Referência */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-950 tracking-tight leading-[1.12]">
+        {/* Título Principal Editorial */}
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-950 tracking-tight leading-[1.1]">
           <div>{isPt ? 'One Stop Software' : 'One Stop Software'}</div>
           <div className="flex items-center justify-center gap-2 sm:gap-3.5 mt-0.5 sm:mt-1">
             <span>{isPt ? 'Repository' : 'Repository'}</span>
@@ -62,18 +76,19 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
           </div>
         </h1>
 
-        {/* Subtítulo Promovendo os Repositórios e Códigos */}
-        <p className="mt-3.5 text-xs sm:text-sm text-zinc-600 font-medium max-w-lg mx-auto leading-relaxed">
+        {/* Subtítulo */}
+        <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-zinc-700 font-medium max-w-md sm:max-w-lg mx-auto leading-relaxed">
           {isPt 
             ? 'Coleção open-source de sistemas full stack, automações de dados em Python e arquiteturas com IA na UnB.' 
             : 'Open-source collection of production full stack apps, Python data pipelines, and AI engineering architectures.'}
         </p>
 
-        {/* Botões de Ação para Explorar Repositórios */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+        {/* Botões de Ação para Explorar */}
+        <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3">
           <a
             href="#projetos"
-            className="inline-flex items-center gap-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            onClick={(e) => handleNavClick(e, 'projetos')}
+            className="inline-flex items-center gap-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-5 sm:px-6 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             <span>{isPt ? 'Explorar Repositórios' : 'View Repositories'}</span>
             <ArrowDown className="w-3.5 h-3.5" />
@@ -81,276 +96,469 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
 
           <a
             href="#contato"
-            className="inline-flex items-center gap-2 bg-white hover:bg-zinc-50 text-zinc-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] transition-all cursor-pointer"
+            onClick={(e) => handleNavClick(e, 'contato')}
+            className="inline-flex items-center gap-2 bg-white hover:bg-zinc-50 text-zinc-950 font-bold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] transition-all cursor-pointer"
           >
             <Mail className="w-3.5 h-3.5 text-zinc-950" />
             <span>{isPt ? 'Entrar em Contato' : 'Contact Me'}</span>
             <ArrowUpRight className="w-3 h-3 text-zinc-400" />
           </a>
         </div>
-
       </div>
 
       {/* ======================================================================= */}
-      {/* 2. BLOCO INFERIOR: LEQUE DE LIVROS + BORDA + DIV BRANCA DE TRANSIÇÃO    */}
+      {/* 2. BLOCO DA CAIXA DE PAPELÃO COM OS CARDS + DIV BRANCA ATÉ O FINAL     */}
       {/* ======================================================================= */}
-      <div className="w-full flex flex-col items-center mt-auto">
-        <div className="relative w-full flex items-end justify-center pointer-events-auto overflow-hidden border-b-2 border-black">
+      <div className="relative w-full flex flex-col items-center pointer-events-auto z-10 pb-8 sm:pb-12">
         
-        {/* Container das Capas dos Repositórios Sobrepostas */}
-        <div className="relative flex items-end justify-center -space-x-8 sm:-space-x-12 md:-space-x-14 translate-y-12 sm:translate-y-16 md:translate-y-20">
+        {/* ------------------------------------------------------------------- */}
+        {/* A. DIV BRANCA ATRÁS DA CAIXA: DO MEIO DA CAIXA ATÉ EMBAIXO (SEM TEXTO) */}
+        {/* ------------------------------------------------------------------- */}
+        <div className="absolute top-[62%] sm:top-[58%] md:top-[54%] inset-x-0 bottom-0 w-full bg-white border-t-2 sm:border-t-[3px] border-zinc-950 z-0 pointer-events-none" />
+
+        {/* ------------------------------------------------------------- */}
+        {/* B. ESTRUTURA DA CAIXA DE PAPELÃO COM OS CARDS JUNTOS E COMPACTOS */}
+        {/* ------------------------------------------------------------- */}
+        <div className="relative w-full max-w-[92%] sm:max-w-[680px] md:max-w-[780px] lg:max-w-[860px] flex flex-col items-center">
           
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 1: BLACK VINYL & GRAPHIC (ETL / DATA ENGINE)           */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('core-data')}
-            onMouseLeave={() => setHoveredBook(null)}
-            onClick={() => handleBookClick('salvadocs')}
-            className={`relative shrink-0 w-38 sm:w-46 md:w-52 h-64 sm:h-74 md:h-84 bg-zinc-950 text-white rounded-xl p-3.5 sm:p-4 shadow-xl border-2 border-zinc-800 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out -rotate-12 ${
-              hoveredBook === 'core-data' ? 'z-40 -translate-y-12 !rotate-[-4deg] shadow-2xl !scale-105' : 'z-10'
-            }`}
+          {/* ABAS LATERAIS DA CAIXA COM ROTAÇÃO MAIOR (Z-0) */}
+          
+          {/* Aba Esquerda Externa Aberta (Rotação maior) */}
+          <div 
+            className="absolute top-24 sm:top-28 -left-3 sm:-left-5 md:-left-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tl-xl -rotate-[50deg] sm:-rotate-[58deg] origin-bottom-right shadow-[3px_3px_0px_rgba(24,24,27,1)] z-0 pointer-events-none overflow-hidden"
+            style={{
+              backgroundImage: 'linear-gradient(135deg, #d8ac78 0%, #b88a55 100%)'
+            }}
           >
-            {/* Header Técnico */}
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[9px] font-bold tracking-widest text-zinc-400">REPO / 01</span>
-              <div className="flex gap-0.5">
-                <div className="w-1.5 h-3 bg-white rounded-xs" />
-                <div className="w-1.5 h-3 bg-zinc-600 rounded-xs" />
-              </div>
-            </div>
-
-            {/* Arte Central de Círculos / Discos de Dados */}
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full border-2 border-zinc-700 flex items-center justify-center my-auto">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-zinc-600 flex items-center justify-center">
-                <div className="w-5 h-5 rounded-full bg-white" />
-              </div>
-            </div>
-
-            {/* Rodapé do Livro com Repositório */}
-            <div className="pt-2 border-t border-zinc-800 flex items-center justify-between">
-              <div>
-                <span className="block font-mono text-[10px] sm:text-[11px] font-black uppercase tracking-tight">
-                  DATA & ETL ENGINE
-                </span>
-                <span className="block font-mono text-[8px] text-zinc-500">
-                  PYTHON • SCRAPING
-                </span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 2: CEMENT GREY "The Engineering Act" (Rick Rubin Style) */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('creative-act')}
-            onMouseLeave={() => setHoveredBook(null)}
-            onClick={() => handleBookClick('salvadocs')}
-            className={`relative shrink-0 w-40 sm:w-48 md:w-54 h-68 sm:h-78 md:h-88 bg-[#d8dce2] text-zinc-900 rounded-xl p-3.5 sm:p-4 shadow-xl border-2 border-zinc-300 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out -rotate-6 ${
-              hoveredBook === 'creative-act' ? 'z-40 -translate-y-12 !rotate-[-1deg] shadow-2xl !scale-105' : 'z-20'
-            }`}
-          >
-            {/* Tipografia Editorial Inspirada no Livro de Rick Rubin */}
-            <div className="space-y-0.5 font-serif font-black text-xs sm:text-sm text-zinc-800 leading-tight">
-              <div>The</div>
-              <div>Engineering</div>
-              <div>Act:</div>
-              <div className="font-normal italic text-zinc-600">A Way</div>
-              <div className="font-normal italic text-zinc-600">of Building</div>
-            </div>
-
-            {/* Círculo Central Minimalista */}
-            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full border-2 border-zinc-900 flex items-center justify-center my-auto">
-              <div className="w-2 h-2 rounded-full bg-zinc-900" />
-            </div>
-
-            {/* Identificação do Autor */}
-            <div className="pt-2 border-t border-zinc-400/30 flex items-center justify-between text-[10px] font-mono font-bold text-zinc-700">
-              <span>CLEAN ARCHITECTURE</span>
-              <span>UnB</span>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 3: YELLOW "Designing Brand Identity" (PARTICIPE+)       */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('participemais')}
-            onMouseLeave={() => setHoveredBook(null)}
-            onClick={() => handleBookClick('participemais')}
-            className={`relative shrink-0 w-42 sm:w-50 md:w-56 h-72 sm:h-82 md:h-92 bg-[#fde047] text-zinc-950 rounded-xl p-4 sm:p-5 shadow-xl border-2 border-amber-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out -rotate-2 ${
-              hoveredBook === 'participemais' ? 'z-40 -translate-y-12 !rotate-[0deg] shadow-2xl !scale-105' : 'z-30'
-            }`}
-          >
-            {/* Título do Livro Amarelo */}
-            <div className="space-y-0.5">
-              <h3 className="text-sm sm:text-base md:text-lg font-black tracking-tight leading-none">
-                Designing
-              </h3>
-              <h3 className="text-sm sm:text-base md:text-lg font-black tracking-tight leading-none">
-                Civic AI &
-              </h3>
-              <h3 className="text-sm sm:text-base md:text-lg font-black tracking-tight leading-none text-zinc-800">
-                Identity
-              </h3>
-            </div>
-
-            {/* Padrão Halftone / Círculo Circular da Capa */}
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto my-auto flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-black/20 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full border border-black/30 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-black/10" />
-                </div>
-              </div>
-              <span className="font-mono text-[9px] font-bold text-zinc-800 z-10 bg-yellow-300/90 px-1.5 py-0.5 rounded border border-black/10">
-                PARTICIPE+
-              </span>
-            </div>
-
-            {/* Rodapé do Repositório */}
-            <div className="pt-2 border-t border-black/15 flex items-center justify-between text-[10px] font-mono font-bold">
-              <div>
-                <span className="block">CIVIC NLP & GOVTECH</span>
-                <span className="block text-[8px] text-zinc-700">DJANGO • LANGCHAIN</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 4: WHITE "how to" (SALVADOCS - O MAIS ALTO / CENTRO)    */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('salvadocs')}
-            onMouseLeave={() => setHoveredBook(null)}
-            onClick={() => handleBookClick('salvadocs')}
-            className={`relative shrink-0 w-44 sm:w-52 md:w-58 h-76 sm:h-86 md:h-96 bg-white text-zinc-950 rounded-xl p-4 sm:p-5 shadow-2xl border-2 border-zinc-200 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out rotate-1 ${
-              hoveredBook === 'salvadocs' ? 'z-40 -translate-y-12 !rotate-[0deg] shadow-2xl !scale-105' : 'z-40'
-            }`}
-          >
-            {/* Tipografia Massiva "how to" (Estilo Michael Bierut) */}
-            <div className="space-y-0">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter leading-[0.88] text-zinc-950">
-                how
-              </h2>
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter leading-[0.88] text-zinc-950">
-                to
-              </h2>
-            </div>
-
-            {/* Subtítulo Descritivo da Aplicação */}
-            <p className="text-[10px] sm:text-[11px] font-medium text-zinc-600 leading-tight pr-2 my-auto">
-              use AI & Python to automate complex document pipelines, extract data and streamline operations.
-            </p>
-
-            {/* Rodapé da Capa com Identificação do Repositório */}
-            <div className="pt-2.5 border-t border-zinc-200 flex items-center justify-between">
-              <div>
-                <span className="block font-mono text-[10px] sm:text-[11px] font-black tracking-tight">
-                  SALVADOCS
-                </span>
-                <span className="block font-mono text-[8px] text-zinc-400">
-                  GEMINI API • ELECTRON
-                </span>
-              </div>
-              <div className="w-6 h-6 rounded-full bg-zinc-950 text-white flex items-center justify-center shadow-xs">
-                <ArrowUpRight className="w-3 h-3" />
-              </div>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 5: GREEN "VIRGIL ABLOH" (Atrás do Centro-Direita)       */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('virgil-card')}
-            onMouseLeave={() => setHoveredBook(null)}
-            className={`relative shrink-0 w-36 sm:w-42 md:w-46 h-56 sm:h-64 md:h-72 bg-[#22c55e] text-white rounded-xl p-3.5 shadow-lg flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out rotate-8 ${
-              hoveredBook === 'virgil-card' ? 'z-40 -translate-y-12 !rotate-[2deg] shadow-2xl !scale-105' : 'z-20'
-            }`}
-          >
-            <div className="space-y-1 font-mono text-[10px] sm:text-[11px] font-black uppercase tracking-wider">
-              <div>UNB 2026</div>
-              <div className="bg-black/25 px-1 py-0.5 rounded inline-block">"OPEN SOURCE"</div>
-              <div>FULL STACK</div>
-              <div className="text-[8px] opacity-80">VIRGIL ABLOH STYLE</div>
-            </div>
-
-            <div className="font-mono text-[9px] font-bold opacity-80 pt-2 border-t border-white/20 flex items-center justify-between">
-              <span>GITHUB PROFILE</span>
-              <ArrowUpRight className="w-3 h-3" />
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* LIVRO 6: FUCHSIA / PINK "Paula Scher: Works" (UNBOOK)         */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            onMouseEnter={() => setHoveredBook('unbook')}
-            onMouseLeave={() => setHoveredBook(null)}
-            onClick={() => handleBookClick('unbook')}
-            className={`relative shrink-0 w-40 sm:w-48 md:w-54 h-66 sm:h-76 md:h-86 bg-[#ec4899] text-white rounded-xl p-3.5 sm:p-4 shadow-xl border-2 border-pink-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out rotate-14 ${
-              hoveredBook === 'unbook' ? 'z-40 -translate-y-12 !rotate-[5deg] shadow-2xl !scale-105' : 'z-15'
-            }`}
-          >
-            {/* Header do Livro Rosa */}
-            <div>
-              <span className="font-mono text-[9px] sm:text-[10px] font-bold tracking-wider opacity-90 block">
-                Paula Scher: Works
-              </span>
-              <span className="font-black text-xs sm:text-sm tracking-tight block mt-0.5">
-                UnBook Marketplace
-              </span>
-            </div>
-
-            {/* Ondas / Anéis Concêntricos em SVG Fiel à Imagem de Referência */}
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto my-auto flex items-center justify-center opacity-85">
-              <svg viewBox="0 0 100 100" className="w-full h-full fill-none stroke-white" strokeWidth="2.5">
-                <circle cx="50" cy="50" r="15" />
-                <circle cx="50" cy="50" r="28" />
-                <circle cx="50" cy="50" r="40" />
-                <circle cx="50" cy="50" r="48" opacity="0.6" />
-              </svg>
-            </div>
-
-            {/* Rodapé do Livro */}
-            <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[10px] font-mono font-bold">
-              <div>
-                <span className="block">SOCKET.IO REALTIME</span>
-                <span className="block text-[8px] opacity-80">REACT & NODE.JS</span>
-              </div>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-        {/* Div Branca imediatamente colada na borda preta (sem gap / sem margin) */}
-        <div className="w-full bg-white py-6 sm:py-8 md:py-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto flex items-center justify-between font-mono text-xs text-zinc-900">
-            <div className="flex items-center gap-2 font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-wider text-zinc-700">
-                {isPt ? '• 06 Repositórios & Estudos' : '• 06 Repositories & Studies'}
-              </span>
-            </div>
-
-            <a 
-              href="#sobre" 
-              className="flex items-center gap-1.5 font-bold text-[11px] text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer group"
-            >
-              <span>{isPt ? 'Conhecer Trajetória' : 'Explore Journey'}</span>
-              <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
-            </a>
-
-            <span className="text-[10px] sm:text-xs font-bold text-zinc-400">
-              #00_INDEX
+            <div className="absolute right-0 inset-y-0 w-2 border-r-2 border-dashed border-zinc-950/30" />
+            <span className="absolute bottom-1 left-2 font-mono text-[7px] sm:text-[8px] font-black text-amber-950/50 -rotate-90 uppercase tracking-widest">
+              FLAP // L
             </span>
           </div>
+
+          {/* Aba Direita Externa Aberta (Rotação maior) */}
+          <div 
+            className="absolute top-24 sm:top-28 -right-3 sm:-right-5 md:-right-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tr-xl rotate-[50deg] sm:rotate-[58deg] origin-bottom-left shadow-[3px_3px_0px_rgba(24,24,27,1)] z-0 pointer-events-none overflow-hidden"
+            style={{
+              backgroundImage: 'linear-gradient(225deg, #d8ac78 0%, #b88a55 100%)'
+            }}
+          >
+            <div className="absolute left-0 inset-y-0 w-2 border-l-2 border-dashed border-zinc-950/30" />
+            <span className="absolute bottom-1 right-2 font-mono text-[7px] sm:text-[8px] font-black text-amber-950/50 rotate-90 uppercase tracking-widest">
+              FLAP // R
+            </span>
+          </div>
+
+          {/* Aba Traseira Superior Dobrada para Trás (Discreta e proporcional) */}
+          <div 
+            className="absolute top-16 sm:top-18 inset-x-8 sm:inset-x-16 md:inset-x-20 h-7 sm:h-9 bg-[#b07f4b] border-2 sm:border-[3px] border-zinc-950 rounded-t-lg z-0 pointer-events-none shadow-xs"
+            style={{
+              backgroundImage: 'linear-gradient(180deg, #b88651 0%, #9e6d3a 100%)'
+            }}
+          />
+
+          {/* O FUNDO E INTERIOR DA CAIXA DE PAPELÃO (Z-0) */}
+          <div 
+            className="absolute top-22 sm:top-24 inset-x-0 bottom-2 bg-[#a3703c] border-2 sm:border-[3px] border-zinc-950 rounded-t-lg z-0 pointer-events-none overflow-hidden shadow-inner"
+            style={{
+              backgroundImage: 'linear-gradient(180deg, #96632f 0%, #7d4e20 40%, #5a3212 100%)',
+              boxShadow: 'inset 0 16px 28px rgba(0, 0, 0, 0.7)'
+            }}
+          >
+            {/* Textura de papelão craft / corrugação interna */}
+            <div 
+              className="absolute inset-0 opacity-15 pointer-events-none"
+              style={{
+                backgroundImage: 'repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0px, rgba(0, 0, 0, 0.15) 2px, transparent 2px, transparent 6px)'
+              }}
+            />
+
+            {/* Borda superior interna do fundo da caixa */}
+            <div className="w-full h-2.5 sm:h-3 bg-[#a87440] border-b-2 border-dashed border-zinc-950/40" />
+          </div>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* C. OS 6 CARDS COM TAMANHO AJUSTADO (TAMPANDO O FUNDO DA CAIXA)   */}
+          {/* ----------------------------------------------------------------- */}
+          <div className="relative z-10 w-full flex items-end justify-center -space-x-7 sm:-space-x-10 md:-space-x-13 lg:-space-x-15 translate-y-6 sm:translate-y-8">
+            
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 1: SOBRE MIM (#sobre) - BRANCO                           */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#sobre"
+              onClick={(e) => handleNavClick(e, 'sobre')}
+              onMouseEnter={() => setHoveredCard('sobre')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-white text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-950 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-8 sm:-rotate-9 ${
+                hoveredCard === 'sobre' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !-rotate-2 shadow-2xl !scale-100' : 'z-10'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-zinc-500">01 // SOBRE</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-zinc-900" />
+              </div>
+
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 mx-auto my-auto rounded-xl bg-zinc-50 border border-zinc-900 flex flex-col items-center justify-center p-1.5 shadow-inner">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-purple-600 text-white font-black text-xs sm:text-sm flex items-center justify-center mb-0.5 shadow-xs">
+                  MS
+                </div>
+                <span className="font-mono text-[7px] sm:text-[8px] font-bold text-zinc-600 uppercase tracking-tight">UNB • DEV</span>
+              </div>
+
+              <div className="pt-2 border-t border-zinc-200 flex items-center justify-between">
+                <div>
+                  <span className="block font-mono text-[9px] sm:text-[10px] font-black uppercase tracking-tight">
+                    {isPt ? 'SOBRE MIM' : 'ABOUT ME'}
+                  </span>
+                  <span className="block font-mono text-[7px] sm:text-[8px] text-zinc-500">
+                    BIO & FOCO
+                  </span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-500" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 2: TRAJETÓRIA (#trajetoria) - CINZA CIMENTO              */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#trajetoria"
+              onClick={(e) => handleNavClick(e, 'trajetoria')}
+              onMouseEnter={() => setHoveredCard('trajetoria')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#d8dce2] text-zinc-900 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-4 sm:-rotate-5 ${
+                hoveredCard === 'trajetoria' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !-rotate-1 shadow-2xl !scale-100' : 'z-12'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-zinc-600">02 // CARREIRA</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-zinc-800" />
+              </div>
+
+              <div className="space-y-0.5 font-serif font-black text-xs sm:text-sm text-zinc-800 leading-tight">
+                <div>The</div>
+                <div>Career</div>
+                <div>Timeline:</div>
+                <div className="font-normal italic text-zinc-600">A Journey</div>
+              </div>
+
+              <div className="w-14 h-14 sm:w-18 sm:h-18 mx-auto rounded-full border border-zinc-900 flex items-center justify-center my-auto">
+                <div className="w-2.5 h-2.5 rounded-full bg-zinc-900" />
+              </div>
+
+              <div className="pt-2 border-t border-zinc-400/30 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold text-zinc-700">
+                <div>
+                  <span className="block font-black uppercase">{isPt ? 'TRAJETÓRIA' : 'EXPERIENCE'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-zinc-600">UNB & TRABALHOS</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-600" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 3: PROJETOS (#projetos) - VERDE ESMERALDA VIBRANTE       */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#projetos"
+              onClick={(e) => handleNavClick(e, 'projetos')}
+              onMouseEnter={() => setHoveredCard('projetos')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-32 sm:w-38 md:w-44 lg:w-48 h-58 sm:h-68 md:h-76 lg:h-84 bg-[#22c55e] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-emerald-600 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-1 sm:-rotate-1.5 ${
+                hoveredCard === 'projetos' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-0 shadow-2xl !scale-100' : 'z-14'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-emerald-100">03 // PROJETOS</span>
+                <span className="font-mono text-[8px] bg-black/25 px-1 py-0.5 rounded font-black">6x REPOS</span>
+              </div>
+
+              <div className="space-y-0.5">
+                <h3 className="text-xs sm:text-sm md:text-base font-black tracking-tight leading-tight">
+                  Projetos &
+                </h3>
+                <h3 className="text-xs sm:text-sm md:text-base font-black tracking-tight leading-tight">
+                  Repositórios
+                </h3>
+              </div>
+
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto my-auto flex items-center justify-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/50 flex items-center justify-center bg-black/15">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold">
+                <div>
+                  <span className="block font-black uppercase">{isPt ? 'REPOSITÓRIOS' : 'PROJECTS'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-emerald-100">CÓDIGO & DEMOS</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 4: ECOSSISTEMA / SKILLS (#skills) - AMARELO PASTEL        */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#skills"
+              onClick={(e) => handleNavClick(e, 'skills')}
+              onMouseEnter={() => setHoveredCard('skills')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-34 sm:w-40 md:w-46 lg:w-50 h-60 sm:h-70 md:h-78 lg:h-86 bg-[#fef08a] text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-2xl border-2 border-amber-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-1 sm:rotate-1.5 ${
+                hoveredCard === 'skills' ? 'z-25 !-translate-y-10 sm:!-translate-y-14 !rotate-0 shadow-2xl !scale-100' : 'z-16'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-amber-900">04 // ECOSSISTEMA</span>
+                <span className="font-mono text-[8px] bg-amber-400/60 px-1 py-0.5 rounded font-bold text-amber-950 border border-amber-500/30">
+                  STACK
+                </span>
+              </div>
+
+              <div className="space-y-0.5">
+                <h3 className="text-xs sm:text-sm md:text-base font-black tracking-tight leading-none text-zinc-950">
+                  Ecossistema
+                </h3>
+                <h3 className="text-xs sm:text-sm md:text-base font-black tracking-tight leading-none text-zinc-800">
+                  & Tech Stack
+                </h3>
+              </div>
+
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto my-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border border-black/20 flex items-center justify-center">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-black/30 flex items-center justify-center">
+                    <span className="font-mono text-[8px] sm:text-[9px] font-black text-amber-950">
+                      ⚡ TECH
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-black/15 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold">
+                <div>
+                  <span className="block font-black uppercase">{isPt ? 'SKILLS & TECH' : 'SKILLS'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-zinc-700">PYTHON • REACT • IA</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-900" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 5: CURRÍCULO (#carta) - PRETO                             */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#carta"
+              onClick={(e) => handleNavClick(e, 'carta')}
+              onMouseEnter={() => setHoveredCard('carta')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#18181b] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-700 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-4 sm:rotate-5 ${
+                hoveredCard === 'carta' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-1 shadow-2xl !scale-100' : 'z-13'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-zinc-400">05 // CURRÍCULO</span>
+                <span className="font-mono text-[7px] sm:text-[8px] bg-white/10 px-1 py-0.5 rounded text-zinc-300">
+                  PDF / CARTA
+                </span>
+              </div>
+
+              <div className="space-y-0.5">
+                <div className="font-mono text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-yellow-300">
+                  {isPt ? 'CURRÍCULO & CARTA' : 'RESUME & LETTER'}
+                </div>
+                <p className="text-[8px] sm:text-[9px] font-medium text-zinc-400 leading-tight">
+                  Formação UnB & carta.
+                </p>
+              </div>
+
+              <div className="w-14 h-14 sm:w-18 sm:h-18 mx-auto rounded-xl border border-zinc-700 bg-zinc-900 flex flex-col items-center justify-center my-auto p-1 shadow-inner">
+                <div className="w-5 h-6 sm:w-6 sm:h-7 border border-zinc-500 rounded-xs flex flex-col items-center justify-center mb-0.5">
+                  <span className="font-mono text-[6px] sm:text-[7px] font-bold text-zinc-300">DOC</span>
+                </div>
+                <span className="font-mono text-[6px] sm:text-[7px] text-zinc-400 font-bold uppercase">VER / BAIXAR</span>
+              </div>
+
+              <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold">
+                <div>
+                  <span className="block font-black uppercase">{isPt ? 'CURRÍCULO' : 'RESUME'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-zinc-500">EXPERIÊNCIA</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 6: CONTATO (#contato) - AZUL ROYAL                        */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#contato"
+              onClick={(e) => handleNavClick(e, 'contato')}
+              onMouseEnter={() => setHoveredCard('contato')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-[#1d4ed8] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-blue-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-8 sm:rotate-9 ${
+                hoveredCard === 'contato' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-2 shadow-2xl !scale-100' : 'z-11'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-blue-200">06 // CONTATO</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+
+              <div>
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-wider text-blue-200 block uppercase">
+                  {isPt ? 'Fale Comigo' : 'Get in Touch'}
+                </span>
+                <span className="font-black text-xs sm:text-sm tracking-tight block mt-0.5">
+                  {isPt ? 'Contato Direto' : 'Contact'}
+                </span>
+              </div>
+
+              <div className="relative w-14 h-14 sm:w-18 sm:h-18 mx-auto my-auto flex items-center justify-center opacity-90">
+                <svg viewBox="0 0 100 100" className="w-full h-full fill-none stroke-blue-200" strokeWidth="2.5">
+                  <circle cx="50" cy="50" r="14" />
+                  <circle cx="50" cy="50" r="26" />
+                  <circle cx="50" cy="50" r="38" />
+                </svg>
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white absolute" />
+              </div>
+
+              <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold">
+                <div>
+                  <span className="block font-black uppercase">{isPt ? 'CONTATO' : 'CONTACT'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-blue-200">DISPONÍVEL</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white" />
+              </div>
+            </a>
+
+          </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* D. FRENTE DA CAIXA DE PAPELÃO (COBRINDO A BASE DOS CARDS Z-20)*/}
+          {/* ------------------------------------------------------------- */}
+          <div 
+            className="relative z-20 w-full -mt-14 sm:-mt-18 md:-mt-22 bg-[#cca070] border-2 sm:border-[3px] border-zinc-950 rounded-b-xl shadow-[5px_5px_0px_rgba(24,24,27,1)] sm:shadow-[8px_8px_0px_rgba(24,24,27,1)] overflow-hidden"
+            style={{
+              backgroundImage: 'linear-gradient(178deg, #d4a775 0%, #c49662 45%, #b2834f 100%)'
+            }}
+          >
+            {/* Textura de Linhas de Corrugação do Papelão */}
+            <div 
+              className="absolute inset-0 pointer-events-none opacity-20"
+              style={{
+                backgroundImage: 'repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0px, rgba(0, 0, 0, 0.08) 2px, transparent 2px, transparent 6px)'
+              }}
+            />
+
+            {/* Fita Adesiva Kraft Reforçada Transversal */}
+            <div 
+              className="absolute -top-3 right-6 sm:right-14 w-32 sm:w-44 h-6 sm:h-7 bg-amber-100/40 backdrop-blur-[1px] border-y border-amber-900/25 rotate-2 shadow-xs pointer-events-none flex items-center justify-center overflow-hidden z-10"
+              style={{
+                backgroundImage: `
+                  repeating-linear-gradient(45deg, rgba(146, 64, 14, 0.07) 0px, rgba(146, 64, 14, 0.07) 1px, transparent 1px, transparent 8px),
+                  repeating-linear-gradient(-45deg, rgba(146, 64, 14, 0.07) 0px, rgba(146, 64, 14, 0.07) 1px, transparent 1px, transparent 8px)
+                `
+              }}
+            >
+              <span className="font-mono text-[8px] sm:text-[9px] font-black tracking-widest uppercase text-amber-950/70">
+                SZERVINSK LABS • INSPECTED
+              </span>
+            </div>
+
+            {/* Aba Frontal Dobrada para Frente/Baixo */}
+            <div className="relative w-full bg-[#bf8e59] border-b-2 sm:border-b-[3px] border-zinc-950 px-3 sm:px-5 py-1.5 sm:py-2 flex items-center justify-between shadow-[0_3px_5px_rgba(0,0,0,0.12)]">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse border border-zinc-950" />
+                <span className="font-mono text-[9px] sm:text-[11px] font-black tracking-wider uppercase text-amber-950">
+                  {isPt ? 'REMESSA DE SEÇÕES // ATALHOS INTERATIVOS' : 'SECTION DISPATCH // INTERACTIVE SHORTCUTS'}
+                </span>
+              </div>
+              <div className="font-mono text-[9px] sm:text-[10px] font-black text-amber-950/80 tracking-widest">
+                BOX #01
+              </div>
+            </div>
+
+            {/* Painel Frontal Principal da Caixa */}
+            <div className="relative p-3 sm:p-4 md:p-5 flex flex-col gap-3">
+              
+              {/* Alça Recortada Central da Caixa de Papelão (Die-cut handle) */}
+              <div className="w-18 sm:w-24 h-4.5 sm:h-5.5 rounded-full bg-gradient-to-b from-[#180b03] to-[#2d1508] border-2 border-zinc-950 mx-auto shadow-[inset_0_3px_6px_rgba(0,0,0,0.85)] flex items-center justify-center">
+                <div className="w-12 sm:w-16 h-1 rounded-full bg-zinc-800/40" />
+              </div>
+
+              {/* Grid Interno: Etiqueta de Envio + Carimbos Postais */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-1">
+                
+                {/* Etiqueta de Envio Postal Neo-Brutalista */}
+                <div className="w-full sm:w-auto bg-white border-2 border-zinc-950 p-2 sm:p-2.5 rounded-md shadow-[2px_2px_0px_rgba(24,24,27,1)] -rotate-1 flex items-center gap-3">
+                  {/* Código de Barras SVG */}
+                  <svg viewBox="0 0 100 32" className="w-18 sm:w-22 h-6 text-zinc-950 fill-current shrink-0">
+                    <rect x="0" y="0" width="3" height="32" />
+                    <rect x="5" y="0" width="1" height="32" />
+                    <rect x="8" y="0" width="4" height="32" />
+                    <rect x="15" y="0" width="2" height="32" />
+                    <rect x="19" y="0" width="1" height="32" />
+                    <rect x="23" y="0" width="4" height="32" />
+                    <rect x="30" y="0" width="2" height="32" />
+                    <rect x="34" y="0" width="1" height="32" />
+                    <rect x="38" y="0" width="3" height="32" />
+                    <rect x="44" y="0" width="2" height="32" />
+                    <rect x="48" y="0" width="4" height="32" />
+                    <rect x="55" y="0" width="1" height="32" />
+                    <rect x="58" y="0" width="3" height="32" />
+                    <rect x="64" y="0" width="2" height="32" />
+                    <rect x="68" y="0" width="5" height="32" />
+                    <rect x="76" y="0" width="1" height="32" />
+                    <rect x="80" y="0" width="3" height="32" />
+                    <rect x="86" y="0" width="2" height="32" />
+                    <rect x="91" y="0" width="4" height="32" />
+                    <rect x="97" y="0" width="3" height="32" />
+                  </svg>
+                  
+                  {/* Dados da Remessa */}
+                  <div className="font-mono text-[9px] leading-tight text-zinc-900 border-l border-zinc-200 pl-2">
+                    <div className="font-black uppercase tracking-wider text-[10px]">
+                      TRACKING: #SZ-2026-DEV
+                    </div>
+                    <div className="text-zinc-600 font-medium">
+                      FROM: szervinsk • UnB Lab
+                    </div>
+                    <div className="text-zinc-500 font-medium text-[8px]">
+                      DEST: 6 Seções do Portfólio
+                    </div>
+                  </div>
+                </div>
+
+                {/* Carimbos Postais no Papelão */}
+                <div className="flex flex-wrap items-center justify-center sm:justify-end gap-1.5 sm:gap-2">
+                  {/* Carimbo Vermelho FRÁGIL */}
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 border-2 border-red-700/85 text-red-700 font-mono font-black text-[9px] tracking-wider uppercase -rotate-2 bg-red-700/5 rounded shadow-xs select-none">
+                    <span>⚠️</span>
+                    <span>FRÁGIL // HANDLE WITH CARE</span>
+                  </div>
+
+                  {/* Carimbo Este Lado para Cima */}
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 border border-amber-950/70 text-amber-950 font-mono font-bold text-[8px] tracking-wider uppercase bg-amber-950/5 rounded select-none">
+                    <span>⬆️ ⬆️</span>
+                    <span>ESTE LADO P/ CIMA</span>
+                  </div>
+
+                  {/* Carimbo 100% Reciclado */}
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 border border-amber-950/70 text-amber-950 font-mono font-bold text-[8px] tracking-wider uppercase bg-amber-950/5 rounded select-none">
+                    <span>♻️</span>
+                    <span>100% OPEN SOURCE</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          {/* Sombra de Contato da Caixa no Chão */}
+          <div className="w-[80%] h-3.5 bg-zinc-950/20 blur-md rounded-full -mt-2 z-10" />
+
         </div>
 
       </div>
