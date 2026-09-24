@@ -43,7 +43,7 @@ const SKILL_ICONS = {
 export default function SkillsSection() {
   const { t } = useLanguage();
   const { isAdmin, customSkills, addCustomSkill, deleteCustomSkill } = useAdmin();
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('backend');
   const [activeSkill, setActiveSkill] = useState(null);
   
   // Estado do formulário in-place de criação de skill
@@ -87,7 +87,7 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#fefce8] bg-dot-pattern relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center">
+    <section id="skills" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#fef9c3] bg-dot-pattern relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center">
       <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
         
         {/* Section Header */}

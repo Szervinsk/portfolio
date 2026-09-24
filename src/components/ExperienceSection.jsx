@@ -275,7 +275,7 @@ export default function ExperienceSection() {
   return (
     <section 
       id="trajetoria" 
-      className="snap-section min-h-screen py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#faf8f5] relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center"
+      className="snap-section min-h-screen py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-[#edf0f4] relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center"
     >
       <div className="max-w-[90rem] mx-auto w-full">
         

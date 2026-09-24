@@ -242,7 +242,7 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
   return (
     <section 
       id="projetos" 
-      className="snap-section w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-[#f0f7ff] bg-dot-pattern text-zinc-950 relative z-20 border-t-2 border-zinc-950/10"
+      className="snap-section w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-12 bg-[#21c50054] bg-dot-pattern text-zinc-950 relative z-20 border-t-2 border-zinc-950/10"
     >
       <div className="max-w-7xl mx-auto w-full">
         

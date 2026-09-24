@@ -41,7 +41,7 @@ export default function ResumeHubSection() {
   }, [isPreviewOpen]);
 
   return (
-    <section id="carta" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-letter-board text-white relative z-20 overflow-hidden border-t-2 border-zinc-800 flex flex-col justify-center items-center">
+    <section id="carta" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#18181b] bg-letter-board text-white relative z-20 overflow-hidden border-t-2 border-zinc-800 flex flex-col justify-center items-center">
       
       <div className={`mx-auto w-full flex flex-col items-center ${isAdmin ? 'max-w-5xl' : 'max-w-4xl'}`}>
         
