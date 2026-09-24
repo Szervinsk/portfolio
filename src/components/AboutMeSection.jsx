@@ -14,7 +14,7 @@ export default function AboutMeSection() {
   const content = t.aboutMe || t.about;
 
   return (
-    <section id="sobre" className="snap-section relative min-h-screen w-full flex items-center justify-center py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#f5f3ff] overflow-hidden">
+    <section id="sobre" className="snap-section relative min-h-screen w-full flex items-center justify-center pt-8 sm:pt-12 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
       
       {/* Grid decorativo de fundo estilo scrapbook */}
       <div className="absolute inset-0 pointer-events-none opacity-40 bg-dot-pattern" />

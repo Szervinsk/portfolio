@@ -88,7 +88,7 @@ export default function SkillsSection() {
 
   return (
     <section id="skills" className="snap-section min-h-screen py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#fefce8] bg-dot-pattern relative z-20 border-t-2 border-zinc-950/10 flex flex-col justify-center items-center">
-      <div className="max-w-5xl mx-auto w-full flex flex-col items-center">
+      <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-5 sm:mb-6">
@@ -220,7 +220,7 @@ export default function SkillsSection() {
         )}
 
         {/* Skills Grid */}
-        <div className="motion-entry delay-250 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+        <div className="motion-entry delay-250 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
           {filteredSkills.map((skill) => {
             const Icon = SKILL_ICONS[skill.name] || Terminal;
             const isSelected = activeSkill?.name === skill.name;
