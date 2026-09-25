@@ -6,6 +6,7 @@ const SECTION_IDS = [
   'trajetoria',
   'projetos',
   'skills',
+  'stats',
   'carta',
   'contato',
   'admin-email',
