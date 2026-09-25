@@ -15,10 +15,13 @@ import {
   Maximize2,
   ZoomIn,
   ZoomOut,
-  Images
+  Images,
+  Search
 } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 import TechIcon from './TechIcon';
+import GitHubRepoCard from './github/GitHubRepoCard';
+import { useGitHubData } from '../hooks/useGitHubData';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdmin } from '../context/AdminContext';
 
@@ -38,11 +41,13 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
   const { t, language } = useLanguage();
   const isPt = language === 'pt';
   const { isAdmin, customProjects, addCustomProject, deleteCustomProject } = useAdmin();
+  const { data: githubData } = useGitHubData();
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [currentPage, setCurrentPage] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(0);
   const [isAddingProject, setIsAddingProject] = useState(false);
+  const [githubSearch, setGithubSearch] = useState('');
 
   // Estados do Modal Lightbox de Expansão de Imagens
   const [lightboxProject, setLightboxProject] = useState(null);
@@ -55,9 +60,18 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
     return [...(customProjects || []), ...baseProjects];
   }, [customProjects, baseProjects]);
 
-  // Categorias disponíveis
+  // Repositórios do GitHub
+  const githubRepos = useMemo(() => {
+    return githubData?.repos || [];
+  }, [githubData?.repos]);
+
+  // Categorias disponíveis (unificadas)
   const categories = useMemo(() => {
-    const cats = [{ id: 'all', label: isPt ? 'Todos' : 'All', count: allProjects.length }];
+    const cats = [
+      { id: 'all', label: isPt ? 'Todos' : 'All', count: allProjects.length + githubRepos.length },
+      { id: 'featured', label: isPt ? '📌 Estudos de Caso' : '📌 Case Studies', count: allProjects.length },
+      { id: 'github', label: isPt ? '⚡ Repositórios GitHub' : '⚡ GitHub Repos', count: githubRepos.length }
+    ];
     const set = new Set();
     allProjects.forEach((p) => {
       if (p.category && !set.has(p.category)) {
@@ -67,11 +81,25 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
       }
     });
     return cats;
-  }, [allProjects, isPt]);
+  }, [allProjects, githubRepos.length, isPt]);
 
-  // Filtragem de projetos
+  // Filtragem de repositórios do GitHub por busca
+  const filteredGitHubRepos = useMemo(() => {
+    if (!githubRepos || githubRepos.length === 0) return [];
+    if (!githubSearch.trim()) return githubRepos;
+    const q = githubSearch.toLowerCase();
+    return githubRepos.filter((r) =>
+      r.name.toLowerCase().includes(q) ||
+      (r.description && r.description.toLowerCase().includes(q)) ||
+      (r.language && r.language.toLowerCase().includes(q)) ||
+      (Array.isArray(r.topics) && r.topics.some((t) => t.toLowerCase().includes(q)))
+    );
+  }, [githubRepos, githubSearch]);
+
+  // Filtragem de projetos (Estudos de Caso)
   const filteredProjects = useMemo(() => {
-    if (activeCategory === 'all') return allProjects;
+    if (activeCategory === 'github') return [];
+    if (activeCategory === 'all' || activeCategory === 'featured') return allProjects;
     return allProjects.filter((p) => p.category === activeCategory);
   }, [allProjects, activeCategory]);
 
@@ -288,8 +316,9 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
           </div>
         </div>
 
+
         {/* ===================================================================== */}
-        {/* 2. BARRA DE FILTROS & INDICADORES DE CONTAGEM                         */}
+        {/* 2. BARRA UNIFICADA DE FILTROS & INDICADORES DE CONTAGEM                */}
         {/* ===================================================================== */}
         <div className="motion-entry delay-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b-2 border-zinc-950/10">
           
@@ -305,7 +334,7 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
                 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-zinc-900 transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeCategory === cat.id
-                    ? 'bg-zinc-900 text-white shadow-[2px_2px_0px_rgba(24,24,27,1)] -translate-y-0.5'
+                    ? 'bg-zinc-950 text-white shadow-[2px_2px_0px_rgba(24,24,27,1)] -translate-y-0.5'
                     : 'bg-white text-zinc-700 hover:bg-zinc-100 shadow-[1px_1px_0px_rgba(24,24,27,1)]'
                 }`}
               >
@@ -319,15 +348,42 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
             ))}
           </div>
 
-          {/* Contador de Projetos */}
+          {/* Contador de Itens */}
           <div className="text-xs font-mono font-bold text-zinc-600 self-end sm:self-center">
-            {String(safePage * itemsPerPage + 1).padStart(2, '0')} — {String(Math.min((safePage + 1) * itemsPerPage, filteredProjects.length)).padStart(2, '0')} / {String(filteredProjects.length).padStart(2, '0')}
+            {activeCategory === 'github' ? (
+              <span>{filteredGitHubRepos.length} {isPt ? 'repositórios encontrados' : 'repositories found'}</span>
+            ) : (
+              <span>{String(safePage * itemsPerPage + 1).padStart(2, '0')} — {String(Math.min((safePage + 1) * itemsPerPage, filteredProjects.length)).padStart(2, '0')} / {String(filteredProjects.length).padStart(2, '0')}</span>
+            )}
           </div>
 
         </div>
 
-        {/* Sub-barra: Página X de Y + Botão 'Mais projetos para explorar >>' */}
-        <div className="flex items-center justify-between text-xs font-mono text-zinc-500 mb-4 px-1">
+        {activeCategory === 'github' ? (
+          <div className="flex flex-col gap-4 animate-pop-in">
+            {/* Campo de busca rápida de repositórios */}
+            <div className="relative max-w-md w-full">
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={githubSearch}
+                onChange={(e) => setGithubSearch(e.target.value)}
+                placeholder={isPt ? 'Filtrar repositórios por nome ou tecnologia...' : 'Filter repos by name or tech...'}
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border-2 border-zinc-950 shadow-[2px_2px_0px_rgba(24,24,27,1)] text-xs font-medium text-zinc-900 outline-none"
+              />
+            </div>
+
+            {/* Grid de Repositórios */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredGitHubRepos.map((repo) => (
+                <GitHubRepoCard key={repo.name} repo={repo} isPt={isPt} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Sub-barra: Página X de Y + Botão 'Mais projetos para explorar >>' */}
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-500 mb-4 px-1">
           <span className="font-bold text-zinc-700">
             {isPt ? `Página ${safePage + 1} de ${totalPages}` : `Page ${safePage + 1} of ${totalPages}`}
           </span>
@@ -639,8 +695,10 @@ export default function ProjectsSection({ selectedProjectId, onSelectProject, on
             </div>
           </div>
         )}
+      </>
+    )}
 
-      </div>
+  </div>
 
       {/* ======================================================================= */}
       {/* 5. MODAL LIGHTBOX EM TELA CHEIA PARA EXPANDIR TELAS & SCREENSHOTS       */}

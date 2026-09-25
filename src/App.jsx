@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import AboutMeSection from './components/AboutMeSection';
 import SkillsSection from './components/SkillsSection';
+import StatsSection from './components/StatsSection';
 import ProjectsSection from './components/ProjectsSection';
 import ExperienceSection from './components/ExperienceSection';
 import LetterSection from './components/LetterSection';
@@ -95,7 +96,7 @@ function PortfolioApp() {
         {preloaderDone && <Navbar activeSection={currentSection} />}
 
         {/* Seções Públicas */}
-        <HeroSection onSelectProject={handleSelectProject} />
+        <HeroSection onSelectProject={handleSelectProject} isReady={preloaderDone} />
         <AboutMeSection />
         <ExperienceSection />
         <ProjectsSection 
@@ -103,6 +104,7 @@ function PortfolioApp() {
           onSelectProject={handleSelectProject} 
         />
         <SkillsSection />
+        <StatsSection />
         <LetterSection />
 
         <ContactSection />
