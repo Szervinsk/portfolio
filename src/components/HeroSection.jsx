@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { ArrowDown, ArrowUpRight, Mail, Package, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowDown, ArrowUpRight, Mail, Package, Sparkles, Flame, BarChart3 } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 import { siteConfig } from '../content/siteConfig';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function HeroSection({ onSelectProject, onOpenProject }) {
+export default function HeroSection({ onSelectProject, onOpenProject, isReady = true }) {
   const { language } = useLanguage();
   const isPt = language === 'pt';
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isEntered, setIsEntered] = useState(false);
+
+  useEffect(() => {
+    if (isReady) {
+      const timer = setTimeout(() => {
+        setIsEntered(true);
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady]);
 
   const handleNavClick = (e, sectionId) => {
     e.preventDefault();
@@ -30,7 +40,7 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
       {/* 0. PADRÃO QUADRICULADO + ILUMINAÇÃO SUAVE                               */}
       {/* ======================================================================= */}
       <div 
-        className="absolute inset-0 pointer-events-none z-0"
+        className="absolute inset-0 pointer-events-none z-0 animate-grid-hero"
         style={{
           backgroundImage: `
             linear-gradient(to right, rgba(24, 24, 27, 0.085) 1px, transparent 1px),
@@ -52,21 +62,23 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
       <div className="relative z-20 w-full max-w-3xl mx-auto mt-10 text-center flex flex-col items-center pt-24 sm:pt-20 md:pt-22 px-4">
         
         {/* Badge Superior: Promovendo o Repositório do GitHub */}
-        <a
-          href={siteConfig.socials.github}
-          target="_blank"
-          rel="noreferrer"
-          className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-zinc-950 bg-white hover:bg-zinc-50 transition-all text-zinc-900 mb-3 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] cursor-pointer"
-        >
-          <GithubIcon className="w-3.5 h-3.5 text-zinc-950 group-hover:scale-110 transition-transform" />
-          <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-wider uppercase">
-            github.com/szervinsk
-          </span>
-          <ArrowUpRight className="w-3 h-3 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
-        </a>
+        <div className={`hero-pop delay-75 ${isEntered ? 'is-entered' : ''}`}>
+          <a
+            href={siteConfig.socials.github}
+            target="_blank"
+            rel="noreferrer"
+            className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-2 border-zinc-950 bg-white hover:bg-zinc-50 transition-all text-zinc-900 mb-3 shadow-[2px_2px_0px_rgba(24,24,27,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_rgba(24,24,27,1)] cursor-pointer"
+          >
+            <GithubIcon className="w-3.5 h-3.5 text-zinc-950 group-hover:scale-110 transition-transform" />
+            <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-wider uppercase">
+              github.com/szervinsk
+            </span>
+            <ArrowUpRight className="w-3 h-3 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
+          </a>
+        </div>
 
         {/* Título Principal Editorial */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-zinc-950 tracking-tight leading-[1.1]">
+        <h1 className={`hero-pop delay-150 ${isEntered ? 'is-entered' : ''} text-3xl sm:text-5xl md:text-6xl font-black text-zinc-950 tracking-tight leading-[1.1]`}>
           <div>{isPt ? 'One Stop Software' : 'One Stop Software'}</div>
           <div className="flex items-center justify-center gap-2 sm:gap-3.5 mt-0.5 sm:mt-1">
             <span>{isPt ? 'Repository' : 'Repository'}</span>
@@ -77,14 +89,14 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
         </h1>
 
         {/* Subtítulo */}
-        <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm text-zinc-700 font-medium max-w-md sm:max-w-lg mx-auto leading-relaxed">
+        <p className={`hero-pop delay-250 ${isEntered ? 'is-entered' : ''} mt-2.5 sm:mt-3 text-xs sm:text-sm text-zinc-700 font-medium max-w-md sm:max-w-lg mx-auto leading-relaxed`}>
           {isPt 
             ? 'Coleção open-source de sistemas full stack, automações de dados em Python e arquiteturas com IA na UnB.' 
             : 'Open-source collection of production full stack apps, Python data pipelines, and AI engineering architectures.'}
         </p>
 
         {/* Botões de Ação para Explorar */}
-        <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3">
+        <div className={`hero-pop delay-350 ${isEntered ? 'is-entered' : ''} mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3`}>
           <a
             href="#projetos"
             onClick={(e) => handleNavClick(e, 'projetos')}
@@ -119,13 +131,13 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
         {/* ------------------------------------------------------------- */}
         {/* B. ESTRUTURA DA CAIXA DE PAPELÃO COM OS CARDS JUNTOS E COMPACTOS */}
         {/* ------------------------------------------------------------- */}
-        <div className="relative w-full max-w-[92%] sm:max-w-[680px] md:max-w-[780px] lg:max-w-[860px] flex flex-col items-center">
+        <div className={`hero-pop delay-450 ${isEntered ? 'is-entered' : ''} relative w-full max-w-[96%] sm:max-w-[760px] md:max-w-[880px] lg:max-w-[980px] flex flex-col items-center`}>
           
-          {/* ABAS LATERAIS DA CAIXA COM ROTAÇÃO MAIOR (Z-0) */}
+          {/* ABAS / ALÇAS LATERAIS DA CAIXA (NA FRENTE DO FUNDO EM Z-INDEX) */}
           
-          {/* Aba Esquerda Externa Aberta (Rotação maior) */}
+          {/* Aba Esquerda Externa Aberta */}
           <div 
-            className="absolute top-24 sm:top-28 -left-3 sm:-left-5 md:-left-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tl-xl -rotate-[50deg] sm:-rotate-[58deg] origin-bottom-right shadow-[3px_3px_0px_rgba(24,24,27,1)] z-0 pointer-events-none overflow-hidden"
+            className="absolute top-24 sm:top-28 -left-3 sm:-left-5 md:-left-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tl-xl -rotate-[50deg] sm:-rotate-[58deg] origin-bottom-right shadow-[3px_3px_0px_rgba(24,24,27,1)] z-[5] pointer-events-none overflow-hidden"
             style={{
               backgroundImage: 'linear-gradient(135deg, #d8ac78 0%, #b88a55 100%)'
             }}
@@ -136,9 +148,9 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
             </span>
           </div>
 
-          {/* Aba Direita Externa Aberta (Rotação maior) */}
+          {/* Aba Direita Externa Aberta */}
           <div 
-            className="absolute top-24 sm:top-28 -right-3 sm:-right-5 md:-right-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tr-xl rotate-[50deg] sm:rotate-[58deg] origin-bottom-left shadow-[3px_3px_0px_rgba(24,24,27,1)] z-0 pointer-events-none overflow-hidden"
+            className="absolute top-24 sm:top-28 -right-3 sm:-right-5 md:-right-7 w-16 sm:w-22 md:w-28 h-12 sm:h-16 md:h-20 bg-[#c49662] border-2 sm:border-[3px] border-zinc-950 rounded-tr-xl rotate-[50deg] sm:rotate-[58deg] origin-bottom-left shadow-[3px_3px_0px_rgba(24,24,27,1)] z-[5] pointer-events-none overflow-hidden"
             style={{
               backgroundImage: 'linear-gradient(225deg, #d8ac78 0%, #b88a55 100%)'
             }}
@@ -149,38 +161,32 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
             </span>
           </div>
 
-          {/* Aba Traseira Superior Dobrada para Trás (Discreta e proporcional) */}
+          {/* Aba Traseira Superior Dobrada para Trás (Na frente do fundo em z-index) */}
           <div 
-            className="absolute top-16 sm:top-18 inset-x-8 sm:inset-x-16 md:inset-x-20 h-7 sm:h-9 bg-[#b07f4b] border-2 sm:border-[3px] border-zinc-950 rounded-t-lg z-0 pointer-events-none shadow-xs"
+            className="absolute top-16 sm:top-18 inset-x-6 sm:inset-x-12 md:inset-x-16 h-7 sm:h-9 bg-[#b07f4b] border-2 sm:border-[3px] border-zinc-950 rounded-t-lg z-[5] pointer-events-none shadow-xs"
             style={{
               backgroundImage: 'linear-gradient(180deg, #b88651 0%, #9e6d3a 100%)'
             }}
           />
 
-          {/* O FUNDO E INTERIOR DA CAIXA DE PAPELÃO (Z-0) */}
+          {/* Fundo Interno / Parede Traseira da Caixa de Papelão (Z-0) */}
           <div 
-            className="absolute top-22 sm:top-24 inset-x-0 bottom-2 bg-[#a3703c] border-2 sm:border-[3px] border-zinc-950 rounded-t-lg z-0 pointer-events-none overflow-hidden shadow-inner"
+            className="absolute top-20 sm:top-22 md:top-50 inset-x-0 bottom-0 bg-[#ab7a47] border-x-2 sm:border-x-[3px] border-t-2 sm:border-t-[3px] border-zinc-950 rounded-t-xl z-0 pointer-events-none overflow-hidden"
             style={{
-              backgroundImage: 'linear-gradient(180deg, #96632f 0%, #7d4e20 40%, #5a3212 100%)',
-              boxShadow: 'inset 0 16px 28px rgba(0, 0, 0, 0.7)'
+              backgroundImage: `
+                linear-gradient(180deg, #966533 0%, #b88651 40%, #a06e3b 100%),
+                repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.07) 0px, rgba(0, 0, 0, 0.07) 2px, transparent 2px, transparent 6px)
+              `
             }}
           >
-            {/* Textura de papelão craft / corrugação interna */}
-            <div 
-              className="absolute inset-0 opacity-15 pointer-events-none"
-              style={{
-                backgroundImage: 'repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0px, rgba(0, 0, 0, 0.15) 2px, transparent 2px, transparent 6px)'
-              }}
-            />
-
-            {/* Borda superior interna do fundo da caixa */}
-            <div className="w-full h-2.5 sm:h-3 bg-[#a87440] border-b-2 border-dashed border-zinc-950/40" />
+            {/* Sombra de profundidade e oclusão na cavidade da caixa */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-transparent pointer-events-none" />
           </div>
 
           {/* ----------------------------------------------------------------- */}
-          {/* C. OS 6 CARDS COM TAMANHO AJUSTADO (TAMPANDO O FUNDO DA CAIXA)   */}
+          {/* C. OS 7 CARDS COM TAMANHO AJUSTADO DENTRO DA CAIXA                */}
           {/* ----------------------------------------------------------------- */}
-          <div className="relative z-10 w-full flex items-end justify-center -space-x-7 sm:-space-x-10 md:-space-x-13 lg:-space-x-15 translate-y-6 sm:translate-y-8">
+          <div className="relative z-10 w-full flex items-end justify-center -space-x-10 sm:-space-x-13 md:-space-x-16 lg:-space-x-19 translate-y-6 sm:translate-y-8">
             
             {/* ------------------------------------------------------------- */}
             {/* CARD 1: SOBRE MIM (#sobre) - BRANCO                           */}
@@ -190,7 +196,7 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
               onClick={(e) => handleNavClick(e, 'sobre')}
               onMouseEnter={() => setHoveredCard('sobre')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-white text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-950 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-8 sm:-rotate-9 ${
+              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-white text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-950 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-9 sm:-rotate-10 ${
                 hoveredCard === 'sobre' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !-rotate-2 shadow-2xl !scale-100' : 'z-10'
               }`}
             >
@@ -227,7 +233,7 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
               onClick={(e) => handleNavClick(e, 'trajetoria')}
               onMouseEnter={() => setHoveredCard('trajetoria')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#d8dce2] text-zinc-900 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-4 sm:-rotate-5 ${
+              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#d8dce2] text-zinc-900 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-6 sm:-rotate-7 ${
                 hoveredCard === 'trajetoria' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !-rotate-1 shadow-2xl !scale-100' : 'z-12'
               }`}
             >
@@ -264,7 +270,7 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
               onClick={(e) => handleNavClick(e, 'projetos')}
               onMouseEnter={() => setHoveredCard('projetos')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-32 sm:w-38 md:w-44 lg:w-48 h-58 sm:h-68 md:h-76 lg:h-84 bg-[#22c55e] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-emerald-600 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-1 sm:-rotate-1.5 ${
+              className={`relative shrink-0 w-32 sm:w-38 md:w-44 lg:w-48 h-58 sm:h-68 md:h-76 lg:h-84 bg-[#22c55e] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-emerald-600 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom -rotate-3 sm:-rotate-3.5 ${
                 hoveredCard === 'projetos' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-0 shadow-2xl !scale-100' : 'z-14'
               }`}
             >
@@ -298,15 +304,15 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
             </a>
 
             {/* ------------------------------------------------------------- */}
-            {/* CARD 4: ECOSSISTEMA / SKILLS (#skills) - AMARELO PASTEL        */}
+            {/* CARD 4: ECOSSISTEMA / SKILLS (#skills) - AMARELO (CENTRO)     */}
             {/* ------------------------------------------------------------- */}
             <a
               href="#skills"
               onClick={(e) => handleNavClick(e, 'skills')}
               onMouseEnter={() => setHoveredCard('skills')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-34 sm:w-40 md:w-46 lg:w-50 h-60 sm:h-70 md:h-78 lg:h-86 bg-[#fef08a] text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-2xl border-2 border-amber-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-1 sm:rotate-1.5 ${
-                hoveredCard === 'skills' ? 'z-25 !-translate-y-10 sm:!-translate-y-14 !rotate-0 shadow-2xl !scale-100' : 'z-16'
+              className={`relative shrink-0 w-34 sm:w-40 md:w-46 lg:w-50 h-60 sm:h-70 md:h-78 lg:h-86 bg-[#fef08a] text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-2xl border-2 border-amber-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-0 ${
+                hoveredCard === 'skills' ? 'z-25 !-translate-y-10 sm:!-translate-y-14 shadow-2xl !scale-100' : 'z-16'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -345,19 +351,78 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
             </a>
 
             {/* ------------------------------------------------------------- */}
-            {/* CARD 5: CURRÍCULO (#carta) - PRETO                             */}
+            {/* CARD 5: STATS & GITHUB (#stats) - VERDE MENTA / ESMERALDA      */}
+            {/* ------------------------------------------------------------- */}
+            <a
+              href="#stats"
+              onClick={(e) => handleNavClick(e, 'stats')}
+              onMouseEnter={() => setHoveredCard('stats')}
+              onMouseLeave={() => setHoveredCard(null)}
+              className={`relative shrink-0 w-32 sm:w-38 md:w-44 lg:w-48 h-58 sm:h-68 md:h-76 lg:h-84 bg-[#a7f3d0] text-zinc-950 rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-emerald-600 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-3 sm:rotate-3.5 ${
+                hoveredCard === 'stats' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-0 shadow-2xl !scale-100' : 'z-14'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-emerald-950">05 // STATS</span>
+                <span className="font-mono text-[7px] sm:text-[8px] bg-emerald-600/20 px-1 py-0.5 rounded text-emerald-950 border border-emerald-600/40 font-bold">
+                  GITHUB
+                </span>
+              </div>
+
+              <div className="space-y-0.5">
+                <div className="font-mono text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-emerald-950">
+                  {isPt ? 'STATS & HEATMAP' : 'STATS & HEATMAP'}
+                </div>
+                <p className="text-[8px] sm:text-[9px] font-medium text-emerald-900/80 leading-tight">
+                  {isPt ? 'Métricas & Atividade' : 'Metrics & Activity'}
+                </p>
+              </div>
+
+              {/* Mini Heatmap Grid Visual */}
+              <div className="w-16 h-14 sm:w-20 sm:h-16 mx-auto rounded-lg border border-emerald-600/35 bg-white/70 p-1.5 flex flex-col justify-center gap-1 my-auto shadow-inner">
+                <div className="grid grid-cols-4 gap-1">
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-200" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-400 animate-pulse" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-600" />
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-700" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-400" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-300" />
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-600" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-400" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500" />
+                  <div className="w-2.5 h-2.5 rounded-xs bg-emerald-200" />
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-emerald-900/20 flex items-center justify-between text-[9px] sm:text-[10px] font-mono font-bold">
+                <div>
+                  <span className="block font-black uppercase text-emerald-950">{isPt ? 'ESTATÍSTICAS' : 'STATISTICS'}</span>
+                  <span className="block text-[7px] sm:text-[8px] text-emerald-800">COMMITS & LANGS</span>
+                </div>
+                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-950" />
+              </div>
+            </a>
+
+            {/* ------------------------------------------------------------- */}
+            {/* CARD 6: CURRÍCULO (#carta) - PRETO                             */}
             {/* ------------------------------------------------------------- */}
             <a
               href="#carta"
               onClick={(e) => handleNavClick(e, 'carta')}
               onMouseEnter={() => setHoveredCard('carta')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#18181b] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-700 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-4 sm:rotate-5 ${
-                hoveredCard === 'carta' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-1 shadow-2xl !scale-100' : 'z-13'
+              className={`relative shrink-0 w-32 sm:w-38 md:w-42 lg:w-46 h-56 sm:h-64 md:h-72 lg:h-80 bg-[#18181b] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-zinc-700 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-6 sm:rotate-7 ${
+                hoveredCard === 'carta' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-1 shadow-2xl !scale-100' : 'z-12'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-zinc-400">05 // CURRÍCULO</span>
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-zinc-400">06 // CURRÍCULO</span>
                 <span className="font-mono text-[7px] sm:text-[8px] bg-white/10 px-1 py-0.5 rounded text-zinc-300">
                   PDF / CARTA
                 </span>
@@ -389,19 +454,19 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
             </a>
 
             {/* ------------------------------------------------------------- */}
-            {/* CARD 6: CONTATO (#contato) - AZUL ROYAL                        */}
+            {/* CARD 7: CONTATO (#contato) - AZUL ROYAL                        */}
             {/* ------------------------------------------------------------- */}
             <a
               href="#contato"
               onClick={(e) => handleNavClick(e, 'contato')}
               onMouseEnter={() => setHoveredCard('contato')}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-[#1d4ed8] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-blue-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-8 sm:rotate-9 ${
-                hoveredCard === 'contato' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-2 shadow-2xl !scale-100' : 'z-11'
+              className={`relative shrink-0 w-30 sm:w-36 md:w-40 lg:w-44 h-54 sm:h-62 md:h-70 lg:h-78 bg-[#1d4ed8] text-white rounded-xl p-3 sm:p-3.5 md:p-4 shadow-xl border-2 border-blue-400 flex flex-col justify-between cursor-pointer transition-all duration-300 ease-out origin-bottom rotate-9 sm:rotate-10 ${
+                hoveredCard === 'contato' ? 'z-25 !-translate-y-14 sm:!-translate-y-18 !rotate-2 shadow-2xl !scale-100' : 'z-10'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-blue-200">06 // CONTATO</span>
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-widest text-blue-200">07 // CONTATO</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
 
@@ -525,7 +590,7 @@ export default function HeroSection({ onSelectProject, onOpenProject }) {
                       FROM: szervinsk • UnB Lab
                     </div>
                     <div className="text-zinc-500 font-medium text-[8px]">
-                      DEST: 6 Seções do Portfólio
+                      DEST: 7 Seções do Portfólio
                     </div>
                   </div>
                 </div>
